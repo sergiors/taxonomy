@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Sergiors\\Metadata\\": ["src", "tests"]
+        }
+    },
+    "require": {
+        "doctrine/common": "^2.5"
+    }
+}
