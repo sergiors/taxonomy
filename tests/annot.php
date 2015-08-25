@@ -6,7 +6,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 AnnotationRegistry::registerFile(__DIR__.'/../src/Mapping/Driver/Annotations.php');
 
-$reflClass = new ReflectionClass('Sergiors\Metadata\User');
+$reflClass = new ReflectionClass('Sergiors\Taxonomy\User');
 $props = $reflClass->getProperties();
 
 $reader = new AnnotationReader();

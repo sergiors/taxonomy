@@ -1,5 +1,5 @@
 <?php
-namespace Sergiors\Metadata;
+namespace Sergiors\Taxonomy;
 
 class Phone
 {

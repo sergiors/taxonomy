@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "Sergiors\\Metadata\\": ["src", "tests"]
+            "Sergiors\\Taxonomy\\": ["src", "tests"]
         }
     },
     "require": {

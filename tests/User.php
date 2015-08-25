@@ -1,12 +1,12 @@
 <?php
-namespace Sergiors\Metadata;
+namespace Sergiors\Taxonomy;
 
-use Sergiors\Metadata\Mapping\Metadata;
+use Sergiors\Taxonomy\Mapping\Taxonomy;
 
 class User
 {
     /**
-     * @Metadata(defaultClass="Phone")
+     * @Taxonomy(defaultClass="Phone")
      */
     private $phone;
 

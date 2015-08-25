@@ -1,5 +1,5 @@
 <?php
-namespace Sergiors\Metadata\Mapping;
+namespace Sergiors\Taxonomy\Mapping;
 
 interface Annotation
 {
