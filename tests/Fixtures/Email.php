@@ -1,13 +1,8 @@
 <?php
 namespace Sergiors\Taxonomy\Fixtures;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class Email
 {
-    /**
-     * @ORM\Column(name="address")
-     */
     private $address;
 
     public function __construct($address = null)

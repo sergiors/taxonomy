@@ -1,31 +1,30 @@
 {
-    "name": "sergiors/taxonomy",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Sérgio Rafael Siqueira",
-            "email": "sergio@inbep.com.br"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Sergiors\\Taxonomy\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Sergiors\\Taxonomy\\": "tests"
-        }
-    },
-    "require": {
-        "doctrine/orm": "~2.5",
-        "doctrine/common": "^2.5",
-        "jms/metadata": "~1.5",
-        "doctrine/instantiator": "~1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.8",
-        "pimple/pimple": "~1",
-        "fzaninotto/faker": "~1.5"
+  "name": "sergiors/taxonomy",
+  "description": "Taxonomy for Doctrine ORM",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sérgio Rafael Siqueira",
+      "email": "sergio@inbep.com.br"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Sergiors\\Taxonomy\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Sergiors\\Taxonomy\\": "tests"
+    }
+  },
+  "require": {
+    "doctrine/orm": "~2.5",
+    "jms/metadata": "~1.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8",
+    "pimple/pimple": "~1",
+    "fzaninotto/faker": "~1.5"
+  }
 }
