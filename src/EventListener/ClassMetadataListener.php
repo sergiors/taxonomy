@@ -40,12 +40,15 @@ class ClassMetadataListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $event)
     {
-        $classMetadata = $event->getClassMetadata();
-        $className = $classMetadata->getName();
-        $column = $this->metadataFactory->getMetadataForClass($className)->getColumn();
+        $className = $event->getClassMetadata()->getName();
+        $classMetadata = $this->metadataFactory->getMetadataForClass($className);
+
+        if (!$classMetadata->propertyMetadata) {
+            return;
+        }
 
         $event->getClassMetadata()->mapField([
-            'fieldName' => $column->name,
+            'fieldName' => $classMetadata->getColumn()->name,
             'type' => Type::JSON_ARRAY
         ]);
     }

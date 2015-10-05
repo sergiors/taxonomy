@@ -50,6 +50,10 @@ class PostLoadListener implements EventSubscriber
         $entity = $event->getObject();
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
 
+        if (!$classMetadata->propertyMetadata) {
+            return;
+        }
+
         $reflClass    = new ReflectionClass(get_class($entity));
         $reflProperty = $reflClass->getProperty($classMetadata->getTaxonomy());
         $reflProperty->setAccessible(true);
