@@ -3,15 +3,18 @@ Taxonomy
 
 Install
 -------
-``bash
+```bash
 composer require sergiors/taxonomy
-``
+```
 
 How to use
 ----------
 
-``php
+```php
 <?php
+use Sergiors\Taxonomy\Configuration\Annotation\Taxonomy;
+use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+
 class User
 {
     /**
@@ -35,6 +38,8 @@ class User
     }
 }
 
+
+// phone.php file
 class Phone
 {
     private $number;
