@@ -43,7 +43,7 @@ class ClassMetadataListener implements EventSubscriber
         $className = $event->getClassMetadata()->getName();
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
 
-        if (!$classMetadata->propertyMetadata) {
+        if (!$classMetadata->getTaxonomy()) {
             return;
         }
 
