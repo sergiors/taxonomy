@@ -47,6 +47,10 @@ class PreFlushListener implements EventSubscriber
             $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
             $reflClass = new ReflectionClass(get_class($entity));
 
+            if (!$reflClass->hasProperty($classMetadata->getTaxonomy())) {
+                continue;
+            }
+
             $this->populateTaxonomy($classMetadata, $reflClass, $entity);
         }
     }
