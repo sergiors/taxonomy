@@ -42,13 +42,14 @@ class ClassMetadataListener implements EventSubscriber
     {
         $className = $event->getClassMetadata()->getName();
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
+        $taxonomyField = $classMetadata->getTaxonomy();
 
-        if (!$classMetadata->getTaxonomy()) {
+        if ($event->getClassMetadata()->hasField($taxonomyField) || !$classMetadata->getTaxonomy()) {
             return;
         }
 
         $event->getClassMetadata()->mapField([
-            'fieldName' => $classMetadata->getTaxonomy(),
+            'fieldName' => $taxonomyField,
             'columnName' => $classMetadata->getColumn()->name,
             'type' => Type::JSON_ARRAY
         ]);
