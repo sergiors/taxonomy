@@ -48,7 +48,8 @@ class ClassMetadataListener implements EventSubscriber
         }
 
         $event->getClassMetadata()->mapField([
-            'fieldName' => $classMetadata->getColumn()->name,
+            'fieldName' => $classMetadata->getTaxonomy(),
+            'columnName' => $classMetadata->getColumn()->name,
             'type' => Type::JSON_ARRAY
         ]);
     }

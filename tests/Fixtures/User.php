@@ -24,7 +24,7 @@ class User
     private $name;
 
     /**
-     * @Taxonomy(column=@ORM\Column(name="taxonomy")))
+     * @Taxonomy(column=@ORM\Column(name="taxons")))
      */
     private $taxonomy;
 
