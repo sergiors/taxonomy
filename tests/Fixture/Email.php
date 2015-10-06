@@ -1,5 +1,5 @@
 <?php
-namespace Sergiors\Taxonomy\Fixtures;
+namespace Sergiors\Taxonomy\Fixture;
 
 class Email
 {

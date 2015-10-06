@@ -1,9 +1,10 @@
 <?php
 namespace Sergiors\Taxonomy\Functional;
 
-use Sergiors\Taxonomy\Fixtures\User;
-use Sergiors\Taxonomy\Fixtures\Email;
-use Sergiors\Taxonomy\Fixtures\Phone;
+use Sergiors\Taxonomy\Fixture\User;
+use Sergiors\Taxonomy\Fixture\Email;
+use Sergiors\Taxonomy\Fixture\Phone;
+use Sergiors\Taxonomy\Fixture\Order;
 
 class IntegrationTest extends TestCase
 {
@@ -20,6 +21,12 @@ class IntegrationTest extends TestCase
                 taxons TEXT
             )
         ');
+
+        $pdo->exec('
+            CREATE TABLE IF NOT EXISTS sales_order (
+                id INTEGER PRIMARY KEY
+            )
+        ');
     }
 
     public function tearDown()
@@ -29,6 +36,7 @@ class IntegrationTest extends TestCase
             ->getWrappedConnection();
 
         $pdo->exec('DROP TABLE IF EXISTS user');
+        $pdo->exec('DROP TABLE IF EXISTS sales_order');
     }
 
     /**
@@ -84,5 +92,23 @@ class IntegrationTest extends TestCase
             ->findOneById(1);
 
         $this->assertInstanceOf(Email::class, $user->getEmail());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldInsertWithoutTaxonomy()
+    {
+        $em = $this->container['doctrine_orm.entity_manager'];
+
+        $order = new Order();
+        $em->persist($order);
+        $em->flush();
+
+        $em->detach($order);
+
+        $order = $em
+            ->getRepository(Order::class)
+            ->findOneById(1);
     }
 }

@@ -50,7 +50,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['doctrine_orm.configuration'] = $container->share(function () {
             return Setup::createAnnotationMetadataConfiguration(
-                [__DIR__.'/../Fixtures'],
+                [__DIR__.'/../Fixture'],
                 true,
                 sys_get_temp_dir(),
                 new ArrayCache(),

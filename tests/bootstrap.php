@@ -1,12 +1,10 @@
 <?php
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
-/* @var $loader \Composer\Autoload\ClassLoader $loader */
 if (!$loader = require __DIR__.'/../vendor/autoload.php') {
-    throw new \RuntimeException();
+    throw new \RuntimeException('You need to install dependencies using Composer.');
 }
 
-// Registering loaders
 $loader->register();
 
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);

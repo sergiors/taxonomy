@@ -18,7 +18,7 @@ use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
 class User
 {
     /**
-     * @Taxonomy(column=@Column(name=""))
+     * @Taxonomy(column=@Column(name="taxons_column"))
      */
     private $taxonomy;
 

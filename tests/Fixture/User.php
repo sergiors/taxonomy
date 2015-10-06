@@ -1,5 +1,5 @@
 <?php
-namespace Sergiors\Taxonomy\Fixtures;
+namespace Sergiors\Taxonomy\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Sergiors\Taxonomy\Configuration\Annotation\Taxonomy;
@@ -24,17 +24,17 @@ class User
     private $name;
 
     /**
-     * @Taxonomy(column=@ORM\Column(name="taxons")))
+     * @Taxonomy(column=@ORM\Column(name="taxons"))
      */
     private $taxonomy;
 
     /**
-     * @Taxon(class="Sergiors\Taxonomy\Fixtures\Email"))
+     * @Taxon(class="Sergiors\Taxonomy\Fixture\Email"))
      */
     private $email;
 
     /**
-     * @Taxon(class="Sergiors\Taxonomy\Fixtures\Phone"))
+     * @Taxon(class="Sergiors\Taxonomy\Fixture\Phone"))
      */
     private $phone;
 
