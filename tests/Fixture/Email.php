@@ -1,8 +1,13 @@
 <?php
 namespace Sergiors\Taxonomy\Fixture;
 
+use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+
 class Email
 {
+    /**
+     * @Taxon
+     */
     private $address;
 
     public function __construct($address = null)

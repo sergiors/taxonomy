@@ -10,5 +10,5 @@ final class Taxon implements Annotation
     /**
      * @var string
      */
-    public $class;
+    public $name;
 }

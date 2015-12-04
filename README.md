@@ -1,10 +1,12 @@
 Taxonomy
 --------
 
+Taxonomy is an easier way implements Value Object and persist them in JSON format.
+
 Install
 -------
 ```bash
-composer require sergiors/taxonomy
+composer require sergiors/taxonomy "dev-master"
 ```
 
 How to use

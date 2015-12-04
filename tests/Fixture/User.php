@@ -7,7 +7,7 @@ use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user")
+ * @ORM\Table(name="users")
  */
 class User
 {
@@ -24,17 +24,20 @@ class User
     private $name;
 
     /**
-     * @Taxonomy(column=@ORM\Column(name="taxons"))
-     */
-    private $taxonomy;
-
-    /**
-     * @Taxon(class="Sergiors\Taxonomy\Fixture\Email"))
+     * @Taxon(
+     *     class="Sergiors\Taxonomy\Fixture\Email",
+     *     indexName="email_address",
+     *     column=@ORM\Column(name="metadata")
+     * )
      */
     private $email;
 
     /**
-     * @Taxon(class="Sergiors\Taxonomy\Fixture\Phone"))
+     * @Taxon(
+     *     class="Sergiors\Taxonomy\Fixture\Phone",
+     *     indexName="phone"
+     *     column=@ORM\Column(name="metadata")
+     * )
      */
     private $phone;
 

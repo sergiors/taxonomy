@@ -1,10 +1,18 @@
 <?php
 namespace Sergiors\Taxonomy\Fixture;
 
+use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+
 class Phone
 {
+    /**
+     * @Taxon
+     */
     private $number;
 
+    /**
+     * @Taxon
+     */
     private $active;
 
     public function __construct()

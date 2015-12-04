@@ -15,15 +15,15 @@ class IntegrationTest extends TestCase
             ->getWrappedConnection();
 
         $pdo->exec('
-            CREATE TABLE IF NOT EXISTS user (
+            CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
                 name VARCHAR (200),
-                taxons TEXT
+                metadata TEXT
             )
         ');
 
         $pdo->exec('
-            CREATE TABLE IF NOT EXISTS sales_order (
+            CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY
             )
         ');
@@ -35,8 +35,8 @@ class IntegrationTest extends TestCase
             ->getConnection()
             ->getWrappedConnection();
 
-        $pdo->exec('DROP TABLE IF EXISTS user');
-        $pdo->exec('DROP TABLE IF EXISTS sales_order');
+        $pdo->exec('DROP TABLE IF EXISTS users');
+        $pdo->exec('DROP TABLE IF EXISTS orders');
     }
 
     /**
