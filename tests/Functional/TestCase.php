@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Functional;
 
 use Doctrine\DBAL\DriverManager;
@@ -25,7 +26,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['doctrine_dbal.configuration'] = [
             'driver' => 'pdo_sqlite',
-            'memory' => true
+            'memory' => true,
         ];
 
         $container['doctrine_dbal.event_manager'] = $container->share(function () {
@@ -63,6 +64,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 $eventManager->addEventSubscriber($container['taxonomy.pre_flush_listener']);
                 $eventManager->addEventSubscriber($container['taxonomy.post_load_listener']);
                 $eventManager->addEventSubscriber($container['taxonomy.class_metadata_listener']);
+
                 return $eventManager;
             });
 

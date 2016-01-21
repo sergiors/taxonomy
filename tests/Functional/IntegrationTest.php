@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Functional;
 
 use Sergiors\Taxonomy\Fixture\User;

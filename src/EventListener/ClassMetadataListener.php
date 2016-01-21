@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\Common\EventSubscriber;
@@ -31,7 +32,7 @@ class ClassMetadataListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
-            Events::loadClassMetadata
+            Events::loadClassMetadata,
         ];
     }
 
@@ -51,7 +52,7 @@ class ClassMetadataListener implements EventSubscriber
         $event->getClassMetadata()->mapField([
             'fieldName' => $taxonomyField,
             'columnName' => $classMetadata->getColumn()->name,
-            'type' => Type::JSON_ARRAY
+            'type' => Type::JSON_ARRAY,
         ]);
     }
 }

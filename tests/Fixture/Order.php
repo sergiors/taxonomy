@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;

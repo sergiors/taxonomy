@@ -1,8 +1,8 @@
 <?php
+
 namespace Sergiors\Taxonomy\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sergiors\Taxonomy\Configuration\Annotation\Taxonomy;
 use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
 
 /**
@@ -80,5 +80,4 @@ class User
     {
         $this->phone = $phone;
     }
-
 }

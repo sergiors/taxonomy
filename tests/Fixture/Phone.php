@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Fixture;
 
 use Sergiors\Taxonomy\Configuration\Annotation\Taxon;

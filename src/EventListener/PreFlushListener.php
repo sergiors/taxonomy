@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\ORM\Events;
@@ -32,7 +33,7 @@ class PreFlushListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
-            Events::preFlush
+            Events::preFlush,
         ];
     }
 
@@ -57,7 +58,7 @@ class PreFlushListener implements EventSubscriber
 
     /**
      * @param ClassMetadataInterface $classMetadata
-     * @param object $entity
+     * @param object                 $entity
      */
     private function populateTaxonomy(
         ClassMetadataInterface $classMetadata,
@@ -84,6 +85,7 @@ class PreFlushListener implements EventSubscriber
 
     /**
      * @param object $taxon
+     *
      * @return array
      */
     private function getTaxonData($taxon)

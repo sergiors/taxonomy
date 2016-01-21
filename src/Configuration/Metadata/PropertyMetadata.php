@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
 use Metadata\PropertyMetadata as BasePropertyMetadata;

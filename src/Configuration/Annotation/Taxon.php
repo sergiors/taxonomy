@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Configuration\Annotation;
 
 /**

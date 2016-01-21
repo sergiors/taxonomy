@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
@@ -44,7 +45,7 @@ class AnnotationDriver implements DriverInterface
     }
 
     /**
-     * @param ReflectionProperty $reflProperty
+     * @param ReflectionProperty     $reflProperty
      * @param ClassMetadataInterface $classMetadata
      */
     private function readProperty(ReflectionProperty $reflProperty, ClassMetadataInterface $classMetadata)

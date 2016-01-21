@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
 if (!$loader = require __DIR__.'/../vendor/autoload.php') {

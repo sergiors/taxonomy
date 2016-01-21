@@ -1,4 +1,5 @@
 <?php
+
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\ORM\Events;
@@ -38,7 +39,7 @@ class PostLoadListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
-            Events::postLoad
+            Events::postLoad,
         ];
     }
 
@@ -76,7 +77,8 @@ class PostLoadListener implements EventSubscriber
         }
     }
 
-    private function populateTaxon($taxon, $data) {
+    private function populateTaxon($taxon, $data)
+    {
         $reflClass = new ReflectionClass(get_class($taxon));
 
         foreach ($reflClass->getProperties() as $property) {
