@@ -7,7 +7,6 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Metadata\MetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataInterface;
-use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -45,42 +44,52 @@ class PreFlushListener implements EventSubscriber
         $uow = $event->getEntityManager()->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
-            $reflClass = new ReflectionClass(get_class($entity));
+            $entityClass = get_class($entity);
+            $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
+            $reflClass = new \ReflectionClass($entityClass);
 
-            if (!$reflClass->hasProperty($classMetadata->getTaxonomy())) {
-                continue;
+            foreach ($classMetadata->getEmbeddedClasses() as $embedded) {
+
+                var_dump($embedded);
+
             }
 
-            $this->populateTaxonomy($classMetadata, $reflClass, $entity);
+
+//            var_dump($classMetadata->getEmbeddedClasses());
+//
+//            $this->populateTaxonomy($classMetadata, $reflClass, $entity);
         }
     }
 
     /**
      * @param ClassMetadataInterface $classMetadata
-     * @param object                 $entity
+     * @param \ReflectionClass       $reflClass
+     * @param $entity
      */
     private function populateTaxonomy(
         ClassMetadataInterface $classMetadata,
-        ReflectionClass $reflClass,
+        \ReflectionClass $reflClass,
         $entity
     ) {
-        $reflProperty = $reflClass->getProperty($classMetadata->getTaxonomy());
-        $reflProperty->setAccessible(true);
+        $taxa = $classMetadata->getTaxa();
 
-        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-            $taxon = $propertyMetadata->getValue($entity);
-            $taxonClass = $propertyMetadata->getTaxonClass();
+//        $reflProperty = $reflClass->getProperty($classMetadata->getTaxonomy());
+//        $reflProperty->setAccessible(true);
 
-            if (!$taxon instanceof $taxonClass) {
-                continue;
-            }
 
-            $taxonomy = $reflProperty->getValue($entity) ?: [];
-            $taxonomy[$propertyMetadata->name] = $this->getTaxonData($taxon);
-
-            $reflProperty->setValue($entity, $taxonomy);
-        }
+//        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
+//            $taxon = $propertyMetadata->getValue($entity);
+//            $taxonClass = $propertyMetadata->getTaxonClass();
+//
+//            if (!$taxon instanceof $taxonClass) {
+//                continue;
+//            }
+//
+//            $taxonomy = $reflProperty->getValue($entity) ?: [];
+//            $taxonomy[$propertyMetadata->name] = $this->getTaxonData($taxon);
+//
+//            $reflProperty->setValue($entity, $taxonomy);
+//        }
     }
 
     /**
@@ -90,7 +99,7 @@ class PreFlushListener implements EventSubscriber
      */
     private function getTaxonData($taxon)
     {
-        $reflClass = new ReflectionClass(get_class($taxon));
+        $reflClass = new \ReflectionClass(get_class($taxon));
         $data = [];
 
         foreach ($reflClass->getProperties() as $property) {

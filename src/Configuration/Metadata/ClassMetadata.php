@@ -2,7 +2,6 @@
 
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
-use Doctrine\ORM\Mapping\Column;
 use Metadata\MergeableClassMetadata;
 
 /**
@@ -10,38 +9,56 @@ use Metadata\MergeableClassMetadata;
  */
 class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
 {
-    private $taxonomy;
+    /**
+     * @var string
+     */
+    private $discriminatorColumn;
 
-    private $column;
+    /**
+     * @var array
+     */
+    private $embeddedClasses = [];
 
-    public function getName()
+    /**
+     * {@inheritdoc}
+     */
+    public function getDiscriminatorColumn()
     {
-        return $this->name;
+        return $this->discriminatorColumn;
     }
 
-    public function getTaxonomy()
+    /**
+     * {@inheritdoc}
+     */
+    public function getEmbeddedClasses()
     {
-        return $this->taxonomy;
+        return $this->embeddedClasses;
     }
 
-    public function getColumn()
+    /**
+     * {@inheritdoc}
+     */
+    public function setDiscriminatorColumn($name)
     {
-        return $this->column;
+        $this->discriminatorColumn = $name;
     }
 
-    public function setTaxonomy($property)
+    /**
+     * {@inheritdoc}
+     */
+    public function mapEmbedded(array $mapping)
     {
-        $this->taxonomy = $property;
+        $this->embeddedClasses[$mapping['fieldName']] = [
+            'class' => $mapping['class'],
+            'column' => $mapping['column']
+        ];
     }
 
-    public function setColumn(Column $column)
+    /**
+     * {@inheritdoc}
+     */
+    public function addNestedEmbedded($name, array $mapping)
     {
-        $this->column = $column;
-    }
-
-    public function addTaxon($property, $class)
-    {
-        $propertyMetadata = new PropertyMetadata($this->name, $property, $class);
-        $this->addPropertyMetadata($propertyMetadata);
+        $this->embeddedClasses[$name]['embedded'][] = $mapping;
     }
 }

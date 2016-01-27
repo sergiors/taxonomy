@@ -2,12 +2,15 @@
 
 namespace Sergiors\Taxonomy\Fixture;
 
-use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 
+/**
+ * @Taxonomy\Embeddable
+ */
 class Email
 {
     /**
-     * @Taxon
+     * @Taxonomy\Index(name="email_address")
      */
     private $address;
 

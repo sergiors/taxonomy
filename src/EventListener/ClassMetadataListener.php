@@ -4,9 +4,10 @@ namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
-use Metadata\MetadataFactory;
 use Doctrine\ORM\Events;
 use Doctrine\DBAL\Types\Type;
+use Metadata\MetadataFactory;
+use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -42,17 +43,19 @@ class ClassMetadataListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $event)
     {
         $className = $event->getClassMetadata()->getName();
+        /** @var ClassMetadataInterface $classMetadata */
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
-        $taxonomyField = $classMetadata->getTaxonomy();
 
-        if ($event->getClassMetadata()->hasField($taxonomyField) || !$classMetadata->getTaxonomy()) {
-            return;
+        foreach ($classMetadata->getEmbeddedClasses() as $fieldName => $embedded) {
+            if (!$embedded['column']) {
+                continue;
+            }
+
+            $event->getClassMetadata()->mapField([
+                'fieldName' => $fieldName,
+                'columnName' => $embedded['column']->name,
+                'type' => Type::JSON_ARRAY
+            ]);
         }
-
-        $event->getClassMetadata()->mapField([
-            'fieldName' => $taxonomyField,
-            'columnName' => $classMetadata->getColumn()->name,
-            'type' => Type::JSON_ARRAY,
-        ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace Sergiors\Taxonomy\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 
 /**
  * @ORM\Entity
@@ -24,22 +24,20 @@ class User
     private $name;
 
     /**
-     * @Taxon(
+     * @Taxonomy\Embedded(
      *     class="Sergiors\Taxonomy\Fixture\Email",
-     *     indexName="email_address",
-     *     column=@ORM\Column(name="metadata")
+     *     column=@Taxonomy\Column(name="email_metadata")
      * )
      */
     private $email;
 
     /**
-     * @Taxon(
+     * @Taxonomy\Embedded(
      *     class="Sergiors\Taxonomy\Fixture\Phone",
-     *     indexName="phone"
-     *     column=@ORM\Column(name="metadata")
+     *     column=@Taxonomy\Column(name="phone_metadata")
      * )
      */
-    private $phone;
+    private $mobile;
 
     public function getId()
     {
@@ -56,9 +54,9 @@ class User
         return $this->email;
     }
 
-    public function getPhone()
+    public function getMobile()
     {
-        return $this->phone;
+        return $this->mobile;
     }
 
     public function setId($id)
@@ -71,13 +69,13 @@ class User
         $this->name = $name;
     }
 
-    public function setEmail($email)
+    public function setEmail(Email $email)
     {
         $this->email = $email;
     }
 
-    public function setPhone($phone)
+    public function setMobile(Phone $mobile)
     {
-        $this->phone = $phone;
+        $this->mobile = $mobile;
     }
 }

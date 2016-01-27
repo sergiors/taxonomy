@@ -2,38 +2,34 @@
 
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
-use Doctrine\ORM\Mapping\Column;
-
+/**
+ * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
+ */
 interface ClassMetadataInterface
 {
     /**
      * @return string
      */
-    public function getName();
+    public function getDiscriminatorColumn();
 
     /**
-     * @return string
+     * @return array
      */
-    public function getTaxonomy();
+    public function getEmbeddedClasses();
 
     /**
-     * @return Column
+     * @param string $name
      */
-    public function getColumn();
+    public function setDiscriminatorColumn($name);
 
     /**
-     * @param string $property
+     * @param array $mapping
      */
-    public function setTaxonomy($property);
+    public function mapEmbedded(array $mapping);
 
     /**
-     * @param Column $column
+     * @param string $name
+     * @param array $mapping
      */
-    public function setColumn(Column $column);
-
-    /**
-     * @param string $property
-     * @param string $class
-     */
-    public function addTaxon($property, $class);
+    public function addNestedEmbedded($name, array $mapping);
 }

@@ -6,7 +6,7 @@ namespace Sergiors\Taxonomy\Configuration\Annotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Taxonomy implements Annotation
+final class Embedded implements Annotation
 {
     /**
      * @var string
@@ -14,12 +14,7 @@ final class Taxonomy implements Annotation
     public $class;
 
     /**
-     * @var string
-     */
-    public $index;
-
-    /**
-     * @var \Doctrine\ORM\Mapping\Column
+     * @var \Sergiors\Taxonomy\Configuration\Annotation\Column
      */
     public $column;
 }

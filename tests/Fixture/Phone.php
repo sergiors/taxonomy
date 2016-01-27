@@ -2,17 +2,20 @@
 
 namespace Sergiors\Taxonomy\Fixture;
 
-use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 
+/**
+ * @Taxonomy\Embeddable
+ */
 class Phone
 {
     /**
-     * @Taxon
+     * @Taxonomy\Index
      */
     private $number;
 
     /**
-     * @Taxon
+     * @Taxonomy\Index(name="actived")
      */
     private $active;
 
