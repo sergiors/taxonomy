@@ -13,15 +13,13 @@ How to use
 ----------
 
 ```php
-<?php
-
 use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 
 class User
 {
     /**
      * @Taxonomy\Embedded(
-     *     class="Sergiors\Taxonomy\Tests\Fixture\Phone",
+     *     class="Phone",
      *     column=@Taxonomy\Column(name="phone_metadata")
      * )
      */
@@ -38,8 +36,6 @@ class User
     }
 }
 
-
-// phone.php file
 /**
  * @Taxonomy\Embeddable
  */
