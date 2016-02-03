@@ -1,6 +1,6 @@
 <?php
 
-namespace Sergiors\Taxonomy\Tests\Integration;
+namespace Sergiors\Taxonomy\Tests\Functional;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;

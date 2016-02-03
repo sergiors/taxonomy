@@ -51,8 +51,8 @@ class PreFlushListener implements EventSubscriber
     }
 
     /**
-     * @param array $embeddedClasses
-     * @param $entity
+     * @param array  $embeddedClasses
+     * @param object $entity
      */
     private function applyEmbeddedValueToEntity(array $embeddedClasses, $entity)
     {
@@ -77,8 +77,8 @@ class PreFlushListener implements EventSubscriber
     }
 
     /**
-     * @param array $mappings
-     * @param $embeddable
+     * @param array  $mappings
+     * @param object $embeddable
      *
      * @return array
      */
@@ -89,17 +89,17 @@ class PreFlushListener implements EventSubscriber
         }
 
         $embeddableClass = get_class($embeddable);
+        $embeddableValue = [];
         $reflClass = new \ReflectionClass($embeddableClass);
 
-        $embedded = [];
         foreach ($mappings as $mapping) {
             $reflProperty = $reflClass->getProperty($mapping['propertyName']);
             $reflProperty->setAccessible(true);
 
             $indexName = $mapping['name'] ?: $mapping['propertyName'];
-            $embedded[$indexName] = $reflProperty->getValue($embeddable);
+            $embeddableValue[$indexName] = $reflProperty->getValue($embeddable);
         }
 
-        return $embedded;
+        return $embeddableValue;
     }
 }

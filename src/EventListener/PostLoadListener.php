@@ -7,7 +7,6 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
-use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -49,46 +48,48 @@ class PostLoadListener implements EventSubscriber
     public function postLoad(LifecycleEventArgs $event)
     {
         $entity = $event->getObject();
-        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
+        $entityClass = get_class($entity);
+        $reflClass = new \ReflectionClass($entityClass);
+        $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
 
-        $reflClass = new ReflectionClass(get_class($entity));
-        if (!$reflClass->hasProperty($classMetadata->getTaxonomy())) {
-            return;
-        }
+        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $mapping) {
+            $reflProperty = $reflClass->getProperty($propertyName);
+            $reflProperty->setAccessible(true);
 
-        $reflProperty = $reflClass->getProperty($classMetadata->getTaxonomy());
-        $reflProperty->setAccessible(true);
+            $embeddableValue = $reflProperty->getValue($entity);
+            $embeddableObject = $this->getEmbeddableObject($mapping, $embeddableValue);
+            $reflProperty->setValue($entity, $embeddableObject);
 
-        $taxonomy = $reflProperty->getValue($entity);
-
-        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-            if (!isset($taxonomy[$propertyMetadata->name])
-                || !$reflClass->hasProperty($propertyMetadata->name)
-            ) {
-                continue;
-            }
-
-            $taxon = $this->instantiator->instantiate($propertyMetadata->getTaxonClass());
-            $this->populateTaxon($taxon, $taxonomy[$propertyMetadata->name]);
-
-            $reflTaxonProperty = $reflClass->getProperty($propertyMetadata->name);
-            $reflTaxonProperty->setAccessible(true);
-            $reflTaxonProperty->setValue($entity, $taxon);
         }
     }
 
-    private function populateTaxon($taxon, $data)
+    /**
+     * @param array $mapping
+     * @param array $embeddableValue
+     *
+     * @return object
+     */
+    private function getEmbeddableObject(array $mapping, array $embeddableValue)
     {
-        $reflClass = new ReflectionClass(get_class($taxon));
+        if (!class_exists($mapping['class'])) {
+            throw new \RuntimeException();
+        }
 
-        foreach ($reflClass->getProperties() as $property) {
-            if (!isset($data[$property->name])) {
+        $embeddable = $this->instantiator->instantiate($mapping['class']);
+        $reflClass = new \ReflectionClass($mapping['class']);
+
+        foreach ($mapping['embeddable'] as $embeddableMapping) {
+            $reflProperty = $reflClass->getProperty($embeddableMapping['propertyName']);
+            $reflProperty->setAccessible(true);
+
+            $indexName = $embeddableMapping['name'] ?: $embeddableMapping['propertyName'];
+            if (!isset($embeddableValue[$indexName])) {
                 continue;
             }
 
-            $reflProperty = $reflClass->getProperty($property->name);
-            $reflProperty->setAccessible(true);
-            $reflProperty->setValue($taxon, $data[$property->name]);
+            $reflProperty->setValue($embeddable, $embeddableValue[$indexName]);
         }
+
+        return $embeddable;
     }
 }

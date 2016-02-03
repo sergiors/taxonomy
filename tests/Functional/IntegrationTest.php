@@ -1,6 +1,6 @@
 <?php
 
-namespace Sergiors\Taxonomy\Tests\Integration;
+namespace Sergiors\Taxonomy\Tests\Functional;
 
 use Sergiors\Taxonomy\Tests\Fixture\User;
 use Sergiors\Taxonomy\Tests\Fixture\Email;
@@ -73,21 +73,22 @@ class IntegrationTest extends TestCase
             ->getRepository(User::class)
             ->findAll();
 
-        var_dump($users);
-
         $this->assertCount(2, $users);
     }
 
     /**
      * @test
      */
-//    public function shouldReturnEmailInstance()
-//    {
-//        $em = $this->container['doctrine_orm.entity_manager'];
-//        $user = $em
-//            ->getRepository(User::class)
-//            ->findOneById(1);
-//
-//        $this->assertInstanceOf(Email::class, $user->getEmail());
-//    }
+    public function shouldReturnEmailInstance()
+    {
+        $em = $this->container['doctrine_orm.entity_manager'];
+        $user = $em
+            ->getRepository(User::class)
+            ->findOneById(1);
+
+        $this->assertInstanceOf(Email::class, $user->getEmail());
+        $this->assertInstanceOf(Phone::class, $user->getMobile());
+
+        $this->assertNull($user->getMobile()->getNumber());
+    }
 }
