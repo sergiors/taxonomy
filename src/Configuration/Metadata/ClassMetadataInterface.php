@@ -8,28 +8,19 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 interface ClassMetadataInterface
 {
     /**
-     * @return string
-     */
-    public function getDiscriminatorColumn();
-
-    /**
      * @return array
      */
     public function getEmbeddedClasses();
 
     /**
-     * @param string $name
+     * @param string $propertyName
+     * @param array  $mapping
      */
-    public function setDiscriminatorColumn($name);
+    public function mapEmbedded($propertyName, array $mapping);
 
     /**
-     * @param array $mapping
+     * @param string $propertyName
+     * @param array  $mapping
      */
-    public function mapEmbedded(array $mapping);
-
-    /**
-     * @param string $name
-     * @param array $mapping
-     */
-    public function addNestedEmbedded($name, array $mapping);
+    public function addNestedEmbedded($propertyName, array $mapping);
 }

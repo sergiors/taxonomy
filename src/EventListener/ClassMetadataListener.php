@@ -7,7 +7,6 @@ use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\DBAL\Types\Type;
 use Metadata\MetadataFactory;
-use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -43,17 +42,16 @@ class ClassMetadataListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $event)
     {
         $className = $event->getClassMetadata()->getName();
-        /** @var ClassMetadataInterface $classMetadata */
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
 
-        foreach ($classMetadata->getEmbeddedClasses() as $fieldName => $embedded) {
-            if (!$embedded['column']) {
+        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $mapping) {
+            if (null === $mapping['column']) {
                 continue;
             }
 
             $event->getClassMetadata()->mapField([
-                'fieldName' => $fieldName,
-                'columnName' => $embedded['column']->name,
+                'fieldName' => $propertyName,
+                'columnName' => $mapping['column']->name,
                 'type' => Type::JSON_ARRAY
             ]);
         }

@@ -1,36 +1,36 @@
 {
-  "name": "sergiors/taxonomy",
-  "description": "Taxonomy for Doctrine ORM",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Sérgio Rafael Siqueira",
-      "email": "sergio@inbep.com.br"
+    "name": "sergiors/taxonomy",
+    "description": "Embedded Annotations with JSON",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sérgio Rafael Siqueira",
+            "email": "sergio@inbep.com.br"
+        }
+    ],
+    "require": {
+        "doctrine/orm": "~2.5",
+        "jms/metadata": "~1.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8",
+        "pimple/pimple": "~1",
+        "pdepend/pdepend": "~2.0",
+        "phing/phing": "~2.10",
+        "phploc/phploc": "~2.1",
+        "phpmd/phpmd": "~2.2",
+        "sebastian/phpcpd": "~2.0",
+        "squizlabs/php_codesniffer": "~2.1",
+        "fzaninotto/faker": "~1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sergiors\\Taxonomy\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sergiors\\Taxonomy\\Tests\\": "tests"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Sergiors\\Taxonomy\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Sergiors\\Taxonomy\\": "tests"
-    }
-  },
-  "require": {
-    "doctrine/orm": "~2.5",
-    "jms/metadata": "~1.5"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~4.8",
-    "pimple/pimple": "~1",
-    "pdepend/pdepend": "~2.0",
-    "phing/phing": "~2.10",
-    "phploc/phploc": "~2.1",
-    "phpmd/phpmd": "~2.2",
-    "sebastian/phpcpd": "~2.0",
-    "squizlabs/php_codesniffer": "~2.1",
-    "fzaninotto/faker": "~1.5"
-  }
 }

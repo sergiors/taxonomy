@@ -10,22 +10,9 @@ use Metadata\MergeableClassMetadata;
 class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
 {
     /**
-     * @var string
-     */
-    private $discriminatorColumn;
-
-    /**
      * @var array
      */
     private $embeddedClasses = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDiscriminatorColumn()
-    {
-        return $this->discriminatorColumn;
-    }
 
     /**
      * {@inheritdoc}
@@ -38,17 +25,9 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritdoc}
      */
-    public function setDiscriminatorColumn($name)
+    public function mapEmbedded($propertyName, array $mapping)
     {
-        $this->discriminatorColumn = $name;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapEmbedded(array $mapping)
-    {
-        $this->embeddedClasses[$mapping['fieldName']] = [
+        $this->embeddedClasses[$propertyName] = [
             'class' => $mapping['class'],
             'column' => $mapping['column']
         ];
@@ -57,8 +36,8 @@ class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInter
     /**
      * {@inheritdoc}
      */
-    public function addNestedEmbedded($name, array $mapping)
+    public function addNestedEmbedded($propertyName, array $mapping)
     {
-        $this->embeddedClasses[$name]['embedded'][] = $mapping;
+        $this->embeddedClasses[$propertyName]['embeddable'][] = $mapping;
     }
 }

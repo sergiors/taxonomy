@@ -1,6 +1,6 @@
 <?php
 
-namespace Sergiors\Taxonomy\Fixture;
+namespace Sergiors\Taxonomy\Tests\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
@@ -25,7 +25,7 @@ class User
 
     /**
      * @Taxonomy\Embedded(
-     *     class="Sergiors\Taxonomy\Fixture\Email",
+     *     class="Sergiors\Taxonomy\Tests\Fixture\Email",
      *     column=@Taxonomy\Column(name="email_metadata")
      * )
      */
@@ -33,7 +33,7 @@ class User
 
     /**
      * @Taxonomy\Embedded(
-     *     class="Sergiors\Taxonomy\Fixture\Phone",
+     *     class="Sergiors\Taxonomy\Tests\Fixture\Phone",
      *     column=@Taxonomy\Column(name="phone_metadata")
      * )
      */

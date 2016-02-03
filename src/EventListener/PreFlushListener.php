@@ -6,7 +6,6 @@ use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Metadata\MetadataFactory;
-use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -46,67 +45,61 @@ class PreFlushListener implements EventSubscriber
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             $entityClass = get_class($entity);
             $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
-            $reflClass = new \ReflectionClass($entityClass);
 
-            foreach ($classMetadata->getEmbeddedClasses() as $embedded) {
-
-                var_dump($embedded);
-
-            }
-
-
-//            var_dump($classMetadata->getEmbeddedClasses());
-//
-//            $this->populateTaxonomy($classMetadata, $reflClass, $entity);
+            $this->applyEmbeddedValueToEntity($classMetadata->getEmbeddedClasses(), $entity);
         }
     }
 
     /**
-     * @param ClassMetadataInterface $classMetadata
-     * @param \ReflectionClass       $reflClass
+     * @param array $embeddedClasses
      * @param $entity
      */
-    private function populateTaxonomy(
-        ClassMetadataInterface $classMetadata,
-        \ReflectionClass $reflClass,
-        $entity
-    ) {
-        $taxa = $classMetadata->getTaxa();
+    private function applyEmbeddedValueToEntity(array $embeddedClasses, $entity)
+    {
+        if (!is_object($entity)) {
+            throw new \UnexpectedValueException();
+        }
 
-//        $reflProperty = $reflClass->getProperty($classMetadata->getTaxonomy());
-//        $reflProperty->setAccessible(true);
+        $entityClass = get_class($entity);
+        $reflClass = new \ReflectionClass($entityClass);
 
+        foreach ($embeddedClasses as $propertyName => $mapping) {
+            $reflProperty = $reflClass->getProperty($propertyName);
+            $reflProperty->setAccessible(true);
 
-//        foreach ($classMetadata->propertyMetadata as $propertyMetadata) {
-//            $taxon = $propertyMetadata->getValue($entity);
-//            $taxonClass = $propertyMetadata->getTaxonClass();
-//
-//            if (!$taxon instanceof $taxonClass) {
-//                continue;
-//            }
-//
-//            $taxonomy = $reflProperty->getValue($entity) ?: [];
-//            $taxonomy[$propertyMetadata->name] = $this->getTaxonData($taxon);
-//
-//            $reflProperty->setValue($entity, $taxonomy);
-//        }
+            if (!$embeddable = $reflProperty->getValue($entity)) {
+                continue;
+            }
+
+            $embeddableValue = $this->getEmbeddableValue($mapping['embeddable'], $embeddable);
+            $reflProperty->setValue($entity, $embeddableValue);
+        }
     }
 
     /**
-     * @param object $taxon
+     * @param array $mappings
+     * @param $embeddable
      *
      * @return array
      */
-    private function getTaxonData($taxon)
+    private function getEmbeddableValue(array $mappings, $embeddable)
     {
-        $reflClass = new \ReflectionClass(get_class($taxon));
-        $data = [];
-
-        foreach ($reflClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $data[$property->name] = $property->getValue($taxon);
+        if (!is_object($embeddable)) {
+            throw new \UnexpectedValueException();
         }
 
-        return $data;
+        $embeddableClass = get_class($embeddable);
+        $reflClass = new \ReflectionClass($embeddableClass);
+
+        $embedded = [];
+        foreach ($mappings as $mapping) {
+            $reflProperty = $reflClass->getProperty($mapping['propertyName']);
+            $reflProperty->setAccessible(true);
+
+            $indexName = $mapping['name'] ?: $mapping['propertyName'];
+            $embedded[$indexName] = $reflProperty->getValue($embeddable);
+        }
+
+        return $embedded;
     }
 }

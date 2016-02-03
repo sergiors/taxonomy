@@ -1,6 +1,6 @@
 <?php
 
-namespace Sergiors\Taxonomy\Fixture;
+namespace Sergiors\Taxonomy\Tests\Fixture;
 
 use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 

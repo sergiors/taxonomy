@@ -1,11 +1,10 @@
 <?php
 
-namespace Sergiors\Taxonomy\Functional;
+namespace Sergiors\Taxonomy\Tests\Integration;
 
-use Sergiors\Taxonomy\Fixture\User;
-use Sergiors\Taxonomy\Fixture\Email;
-use Sergiors\Taxonomy\Fixture\Phone;
-use Sergiors\Taxonomy\Fixture\Order;
+use Sergiors\Taxonomy\Tests\Fixture\User;
+use Sergiors\Taxonomy\Tests\Fixture\Email;
+use Sergiors\Taxonomy\Tests\Fixture\Phone;
 
 class IntegrationTest extends TestCase
 {
@@ -49,17 +48,18 @@ class IntegrationTest extends TestCase
 
         $phone = new Phone();
         $phone->setNumber($faker->phoneNumber);
+
         $user2 = new User();
         $user2->setName($faker->name);
         $user2->setEmail(new Email($faker->email));
         $user2->setMobile($phone);
 
-//        $em->persist($user);
+        $em->persist($user);
         $em->persist($user2);
         $em->flush();
 
-//        $em->detach($user);
-//        $em->detach($user2);
+        $em->detach($user);
+        $em->detach($user2);
     }
 
     /**
@@ -67,13 +67,15 @@ class IntegrationTest extends TestCase
      */
     public function shouldReturnUsers()
     {
-//        $em = $this->container['doctrine_orm.entity_manager'];
-//
-//        $users = $em
-//            ->getRepository(User::class)
-//            ->findAll();
-//
-//        $this->assertCount(2, $users);
+        $em = $this->container['doctrine_orm.entity_manager'];
+
+        $users = $em
+            ->getRepository(User::class)
+            ->findAll();
+
+        var_dump($users);
+
+        $this->assertCount(2, $users);
     }
 
     /**

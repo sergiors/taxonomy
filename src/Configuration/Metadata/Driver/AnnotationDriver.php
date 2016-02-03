@@ -36,21 +36,23 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new ClassMetadata($reflClass->getName());
 
         foreach ($reflClass->getProperties() as $reflProperty) {
-            $mapping = [];
-            $mapping['fieldName'] = $reflProperty->getName();
+            if (!$annotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
+                continue;
+            }
 
-            $this->addEmbedded(
-                $mapping,
-                $classMetadata,
-                $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)
-            );
+            $mapping = [
+                'class' => $annotation->class,
+                'column' => $annotation->column
+            ];
+
+            $classMetadata->mapEmbedded($reflProperty->getName(), $mapping);
         }
 
-        foreach ($classMetadata->getEmbeddedClasses() as $property => $embeddableClass) {
+        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $embeddableClass) {
             $reflClass = new \ReflectionClass($embeddableClass['class']);
 
             if ($this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
-                $this->nestedEmbedded($reflClass, $classMetadata, $property);
+                $this->addNestedEmbedded($propertyName, $reflClass, $classMetadata);
             }
         }
 
@@ -58,43 +60,26 @@ class AnnotationDriver implements DriverInterface
     }
 
     /**
-     * @param array                  $mapping
-     * @param ClassMetadataInterface $metadata
-     * @param Embedded|null          $annotation
-     */
-    private function addEmbedded(
-        array $mapping,
-        ClassMetadataInterface $metadata,
-        Embedded $annotation = null
-    ) {
-        if (null === $annotation) {
-            return;
-        }
-
-        $mapping['class'] = $annotation->class;
-        $mapping['column'] = $annotation->column;
-
-        $metadata->mapEmbedded($mapping);
-    }
-
-    /**
+     * @param string                 $propertyName
      * @param \ReflectionClass       $reflClass
-     * @param ClassMetadataInterface $metadata
-     * @param string                 $property
+     * @param ClassMetadataInterface $classMetadata
      */
-    private function nestedEmbedded(
+    private function addNestedEmbedded(
+        $propertyName,
         \ReflectionClass $reflClass,
-        ClassMetadataInterface $metadata,
-        $property
+        ClassMetadataInterface $classMetadata
     ) {
         foreach ($reflClass->getProperties() as $reflProperty) {
-            $mapping = [];
-            $mapping['fieldName'] = $reflProperty->getName();
-
-            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
-                $mapping['name'] = $annotation->name;
-                $metadata->addNestedEmbedded($property, $mapping);
+            if (!$annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
+                continue;
             }
+
+            $mapping = [
+                'propertyName' => $reflProperty->getName(),
+                'name' => $annotation->name
+            ];
+
+            $classMetadata->addNestedEmbedded($propertyName, $mapping);
         }
     }
 }
