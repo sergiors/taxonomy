@@ -14,18 +14,16 @@ How to use
 
 ```php
 <?php
-use Sergiors\Taxonomy\Configuration\Annotation\Taxonomy;
-use Sergiors\Taxonomy\Configuration\Annotation\Taxon;
+
+use Sergiors\Taxonomy\Configuration\Annotation as Taxonomy;
 
 class User
 {
     /**
-     * @Taxonomy(column=@Column(name="taxons_column"))
-     */
-    private $taxonomy;
-
-    /**
-     * @Taxon(class="Phone")
+     * @Taxonomy\Embedded(
+     *     class="Sergiors\Taxonomy\Tests\Fixture\Phone",
+     *     column=@Taxonomy\Column(name="phone_metadata")
+     * )
      */
     private $phone;
 
@@ -42,13 +40,34 @@ class User
 
 
 // phone.php file
+/**
+ * @Taxonomy\Embeddable
+ */
 class Phone
 {
+    /**
+     * @Taxonomy\Index
+     */
     private $number;
+
+    /**
+     * @Taxonomy\Index(name="actived")
+     */
+    private $active;
+
+    public function __construct()
+    {
+        $this->active = false;
+    }
 
     public function getNumber()
     {
         return $this->number;
+    }
+
+    public function isActive()
+    {
+        return $this->active;
     }
 
     public function setNumber($number)
