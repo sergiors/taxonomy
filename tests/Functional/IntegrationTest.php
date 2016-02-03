@@ -91,4 +91,19 @@ class IntegrationTest extends TestCase
 
         $this->assertNull($user->getMobile()->getNumber());
     }
+
+    /**
+     * @test
+     */
+    public function shouldReturnPhoneInstanceWithNullValues()
+    {
+        $em = $this->container['doctrine_orm.entity_manager'];
+        $user = $em
+            ->getRepository(User::class)
+            ->findOneById(1);
+
+        $this->assertInstanceOf(Phone::class, $user->getMobile());
+
+        $this->assertNull($user->getMobile()->getNumber());
+    }
 }
