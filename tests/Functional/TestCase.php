@@ -13,6 +13,7 @@ use Sergiors\Taxonomy\Configuration\Metadata\Driver\AnnotationDriver;
 use Sergiors\Taxonomy\EventListener\ClassMetadataListener;
 use Sergiors\Taxonomy\EventListener\PostLoadListener;
 use Sergiors\Taxonomy\EventListener\PreFlushListener;
+use Sergiors\Taxonomy\EventListener\PreUpdateListener;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -62,6 +63,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $container['doctrine_dbal.event_manager'] = $container
             ->extend('doctrine_dbal.event_manager', function ($eventManager, $container) {
                 $eventManager->addEventSubscriber($container['taxonomy.pre_flush_listener']);
+                $eventManager->addEventSubscriber($container['taxonomy.pre_update_listener']);
                 $eventManager->addEventSubscriber($container['taxonomy.post_load_listener']);
                 $eventManager->addEventSubscriber($container['taxonomy.class_metadata_listener']);
 
@@ -82,6 +84,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['taxonomy.pre_flush_listener'] = $container->share(function ($container) {
             return new PreFlushListener($container['taxonomy.metadata_factory']);
+        });
+
+        $container['taxonomy.pre_update_listener'] = $container->share(function ($container) {
+            return new PreUpdateListener($container['taxonomy.metadata_factory']);
         });
 
         $container['taxonomy.post_load_listener'] = $container->share(function ($container) {
