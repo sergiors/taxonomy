@@ -41,6 +41,6 @@ class DateTimeType extends Type
             return $value;
         }
 
-        return \DateTime::createFromFormat(self::DATETIME_FORMAT, $value);
+        return new \DateTime::createFromFormat(self::DATETIME_FORMAT, $value);
     }
 }
