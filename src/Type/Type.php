@@ -2,6 +2,9 @@
 
 namespace Sergiors\Taxonomy\Type;
 
+/**
+ * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
+ */
 abstract class Type
 {
     const TEXT = 'text';
