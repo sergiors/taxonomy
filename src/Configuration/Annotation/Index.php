@@ -12,4 +12,9 @@ final class Index implements Annotation
      * @var string
      */
     public $name;
+
+    /**
+     * @var string
+     */
+    public $type = 'text';
 }

@@ -5,8 +5,14 @@ namespace Sergiors\Taxonomy\EventListener;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
+/**
+ * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
+ */
 class PreUpdateListener extends ObjectWalkerListener
 {
+    /**
+     * @return array
+     */
     public function getSubscribedEvents()
     {
         return [
@@ -14,6 +20,9 @@ class PreUpdateListener extends ObjectWalkerListener
         ];
     }
 
+    /**
+     * @param LifecycleEventArgs $event
+     */
     public function preUpdate(LifecycleEventArgs $event)
     {
         $uow = $event->getEntityManager()->getUnitOfWork();

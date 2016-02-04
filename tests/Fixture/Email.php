@@ -14,11 +14,19 @@ class Email
      */
     private $address;
 
+    /**
+     * @Taxonomy\Index(type="datetime")
+     *
+     * @var \DateTime
+     */
+    private $createdAt;
+
     private $confirmed = false;
 
     public function __construct($address = null)
     {
-        $this->setAddress($address);
+        $this->createdAt = new \DateTime();
+        $this->address = $address;
     }
 
     public function getAddress()
@@ -26,9 +34,13 @@ class Email
         return $this->address;
     }
 
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
     public function setAddress($address)
     {
-        $address = mb_strtolower(trim($address));
         $this->address = $address;
     }
 }

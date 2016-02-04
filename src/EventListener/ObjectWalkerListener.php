@@ -4,6 +4,7 @@ namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Metadata\MetadataFactory;
+use Sergiors\Taxonomy\Type\Type;
 use ReflectionClass;
 
 /**
@@ -84,7 +85,8 @@ abstract class ObjectWalkerListener implements EventSubscriber
             $reflProperty->setAccessible(true);
 
             $indexName = $mapping['name'] ?: $mapping['propertyName'];
-            $embeddableValue[$indexName] = $reflProperty->getValue($embeddable);
+            $embeddableValue[$indexName] = Type::getType($mapping['type'])
+                ->convertToDatabaseValue($reflProperty->getValue($embeddable));
         }
 
         return $embeddableValue;

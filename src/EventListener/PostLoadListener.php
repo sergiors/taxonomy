@@ -7,6 +7,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
+use Sergiors\Taxonomy\Type\Type;
 use ReflectionClass;
 
 /**
@@ -88,7 +89,10 @@ class PostLoadListener implements EventSubscriber
                 continue;
             }
 
-            $reflProperty->setValue($embeddable, $embeddableValue[$indexName]);
+            $reflProperty->setValue(
+                $embeddable,
+                Type::getType($embeddableMapping['type'])->convertToPHPValue($embeddableValue[$indexName])
+            );
         }
 
         return $embeddable;

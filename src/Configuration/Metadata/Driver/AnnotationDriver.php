@@ -48,7 +48,7 @@ class AnnotationDriver implements DriverInterface
 
             $this->addNestedEmbedded(
                 $reflProperty->getName(),
-                new \ReflectionClass($annotation->class),
+                new ReflectionClass($annotation->class),
                 $classMetadata
             );
         }
@@ -58,7 +58,7 @@ class AnnotationDriver implements DriverInterface
 
     /**
      * @param string                 $propertyName
-     * @param \ReflectionClass       $reflClass
+     * @param ReflectionClass        $reflClass
      * @param ClassMetadataInterface $classMetadata
      */
     private function addNestedEmbedded(
@@ -77,7 +77,8 @@ class AnnotationDriver implements DriverInterface
 
             $mapping = [
                 'propertyName' => $reflProperty->getName(),
-                'name' => $annotation->name
+                'name' => $annotation->name,
+                'type' => $annotation->type
             ];
 
             $classMetadata->addNestedEmbedded($propertyName, $mapping);
