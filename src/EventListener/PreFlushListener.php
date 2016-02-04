@@ -43,7 +43,12 @@ class PreFlushListener implements EventSubscriber
     {
         $uow = $event->getEntityManager()->getUnitOfWork();
 
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+        $scheduledEntity = array_merge(
+            $uow->getScheduledEntityInsertions(),
+            $uow->getScheduledEntityUpdates()
+        );
+
+        foreach ($scheduledEntity as $entity) {
             $entityClass = get_class($entity);
             $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
 
