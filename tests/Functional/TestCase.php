@@ -62,13 +62,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['doctrine_dbal.event_manager'] = $container
             ->extend('doctrine_dbal.event_manager', function ($eventManager, $container) {
-                $eventManager->addEventSubscriber($container['taxonomy.pre_flush_listener']);
-                $eventManager->addEventSubscriber($container['taxonomy.pre_update_listener']);
-                $eventManager->addEventSubscriber($container['taxonomy.post_load_listener']);
-                $eventManager->addEventSubscriber($container['taxonomy.class_metadata_listener']);
+                $listeners = $container['taxonomy.listeners'];
+
+                foreach ($listeners as $listener) {
+                    $eventManager->addEventSubscriber($listener);
+                }
 
                 return $eventManager;
             });
+
+        $container['taxonomy.listeners'] = $container->share(function ($container) {
+            return [
+                new PreFlushListener($container['taxonomy.metadata_factory']),
+                new PreUpdateListener($container['taxonomy.metadata_factory']),
+                new PostLoadListener($container['taxonomy.metadata_factory']),
+                new ClassMetadataListener($container['taxonomy.metadata_factory'])
+            ];
+        });
 
         $container['doctrine_orm.annotation_reader'] = $container->share(function () {
             return new AnnotationReader();
@@ -80,22 +90,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['taxonomy.metadata_factory'] = $container->share(function ($container) {
             return new MetadataFactory($container['taxonomy.annotation_driver']);
-        });
-
-        $container['taxonomy.pre_flush_listener'] = $container->share(function ($container) {
-            return new PreFlushListener($container['taxonomy.metadata_factory']);
-        });
-
-        $container['taxonomy.pre_update_listener'] = $container->share(function ($container) {
-            return new PreUpdateListener($container['taxonomy.metadata_factory']);
-        });
-
-        $container['taxonomy.post_load_listener'] = $container->share(function ($container) {
-            return new PostLoadListener($container['taxonomy.metadata_factory']);
-        });
-
-        $container['taxonomy.class_metadata_listener'] = $container->share(function ($container) {
-            return new ClassMetadataListener($container['taxonomy.metadata_factory']);
         });
     }
 }
