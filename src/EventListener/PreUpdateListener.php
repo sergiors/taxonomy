@@ -8,7 +8,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class PreUpdateListener extends ObjectWalkerListener
+class PreUpdateListener extends WalkerListener
 {
     /**
      * @return array

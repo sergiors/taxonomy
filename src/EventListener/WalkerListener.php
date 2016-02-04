@@ -10,7 +10,7 @@ use ReflectionClass;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-abstract class ObjectWalkerListener implements EventSubscriber
+abstract class WalkerListener implements EventSubscriber
 {
     /**
      * @var MetadataFactory

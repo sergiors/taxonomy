@@ -12,7 +12,7 @@ use Metadata\MetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\Driver\AnnotationDriver;
 use Sergiors\Taxonomy\EventListener\ClassMetadataListener;
 use Sergiors\Taxonomy\EventListener\PostLoadListener;
-use Sergiors\Taxonomy\EventListener\PreFlushListener;
+use Sergiors\Taxonomy\EventListener\PrePersistListener;
 use Sergiors\Taxonomy\EventListener\PreUpdateListener;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -73,7 +73,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['taxonomy.listeners'] = $container->share(function ($container) {
             return [
-                new PreFlushListener($container['taxonomy.metadata_factory']),
+                new PrePersistListener($container['taxonomy.metadata_factory']),
                 new PreUpdateListener($container['taxonomy.metadata_factory']),
                 new PostLoadListener($container['taxonomy.metadata_factory']),
                 new ClassMetadataListener($container['taxonomy.metadata_factory'])
