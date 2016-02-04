@@ -7,6 +7,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
+use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -49,7 +50,7 @@ class PostLoadListener implements EventSubscriber
     {
         $entity = $event->getObject();
         $entityClass = get_class($entity);
-        $reflClass = new \ReflectionClass($entityClass);
+        $reflClass = new ReflectionClass($entityClass);
         $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
 
         foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $mapping) {
@@ -76,7 +77,7 @@ class PostLoadListener implements EventSubscriber
         }
 
         $embeddable = $this->instantiator->instantiate($mapping['class']);
-        $reflClass = new \ReflectionClass($mapping['class']);
+        $reflClass = new ReflectionClass($mapping['class']);
 
         foreach ($mapping['embeddable'] as $embeddableMapping) {
             $reflProperty = $reflClass->getProperty($embeddableMapping['propertyName']);

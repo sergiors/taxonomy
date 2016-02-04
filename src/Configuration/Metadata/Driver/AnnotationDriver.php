@@ -9,6 +9,7 @@ use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadata;
 use Sergiors\Taxonomy\Configuration\Annotation\Embeddable;
 use Sergiors\Taxonomy\Configuration\Annotation\Embedded;
 use Sergiors\Taxonomy\Configuration\Annotation\Index;
+use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -31,7 +32,7 @@ class AnnotationDriver implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function loadMetadataForClass(\ReflectionClass $reflClass)
+    public function loadMetadataForClass(ReflectionClass $reflClass)
     {
         $classMetadata = new ClassMetadata($reflClass->getName());
 
@@ -62,7 +63,7 @@ class AnnotationDriver implements DriverInterface
      */
     private function addNestedEmbedded(
         $propertyName,
-        \ReflectionClass $reflClass,
+        ReflectionClass $reflClass,
         ClassMetadataInterface $classMetadata
     ) {
         if (!$this->reader->getClassAnnotation($reflClass, Embeddable::class)) {

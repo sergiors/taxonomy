@@ -6,6 +6,7 @@ use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Metadata\MetadataFactory;
+use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -61,7 +62,7 @@ class PreFlushListener implements EventSubscriber
         }
 
         $entityClass = get_class($entity);
-        $reflClass = new \ReflectionClass($entityClass);
+        $reflClass = new ReflectionClass($entityClass);
 
         foreach ($embeddedClasses as $propertyName => $mapping) {
             $reflProperty = $reflClass->getProperty($propertyName);
@@ -90,7 +91,7 @@ class PreFlushListener implements EventSubscriber
 
         $embeddableClass = get_class($embeddable);
         $embeddableValue = [];
-        $reflClass = new \ReflectionClass($embeddableClass);
+        $reflClass = new ReflectionClass($embeddableClass);
 
         foreach ($mappings as $mapping) {
             $reflProperty = $reflClass->getProperty($mapping['propertyName']);

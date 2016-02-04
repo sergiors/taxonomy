@@ -3,7 +3,7 @@ Taxonomy
 
 [![Build Status](https://travis-ci.org/sergiors/taxonomy.svg?branch=master)](https://travis-ci.org/sergiors/taxonomy)
 
-Taxonomy is an easier way implements Value Object and persist them in JSON format.
+Taxonomy is an easier way implements Value Object and persist them in JSON format. Like Doctrine Embeddables
 
 Install
 -------
