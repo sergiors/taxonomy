@@ -85,8 +85,9 @@ abstract class ObjectWalkerListener implements EventSubscriber
             $reflProperty->setAccessible(true);
 
             $indexName = $mapping['name'] ?: $mapping['propertyName'];
-            $embeddableValue[$indexName] = Type::getType($mapping['type'])
-                ->convertToDatabaseValue($reflProperty->getValue($embeddable));
+            $value = $reflProperty->getValue($embeddable);
+
+            $embeddableValue[$indexName] = Type::getType($mapping['type'])->convertToDatabaseValue($value);
         }
 
         return $embeddableValue;

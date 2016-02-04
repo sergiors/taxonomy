@@ -89,10 +89,10 @@ class PostLoadListener implements EventSubscriber
                 continue;
             }
 
-            $reflProperty->setValue(
-                $embeddable,
-                Type::getType($embeddableMapping['type'])->convertToPHPValue($embeddableValue[$indexName])
-            );
+            $type = $embeddableMapping['type'];
+            $value = $embeddableValue[$indexName];
+
+            $reflProperty->setValue($embeddable, Type::getType($type)->convertToPHPValue($value));
         }
 
         return $embeddable;
