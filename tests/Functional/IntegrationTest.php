@@ -97,6 +97,20 @@ class IntegrationTest extends TestCase
     /**
      * @test
      */
+    public function shouldBeInstanceOfDateTime()
+    {
+        $em = $this->container['doctrine_orm.entity_manager'];
+
+        $user = $em
+            ->getRepository(User::class)
+            ->findOneById(1);
+
+        $this->assertInstanceOf(\DateTime::class, $user->getEmail()->getCreatedAt());
+    }
+
+    /**
+     * @test
+     */
     public function shouldReturnUsers()
     {
         $em = $this->container['doctrine_orm.entity_manager'];
