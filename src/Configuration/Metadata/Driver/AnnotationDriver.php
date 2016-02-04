@@ -40,20 +40,16 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $mapping = [
+            $classMetadata->mapEmbedded($reflProperty->getName(), [
                 'class' => $annotation->class,
                 'column' => $annotation->column
-            ];
+            ]);
 
-            $classMetadata->mapEmbedded($reflProperty->getName(), $mapping);
-        }
-
-        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $embeddableClass) {
-            $reflClass = new \ReflectionClass($embeddableClass['class']);
-
-            if ($this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
-                $this->addNestedEmbedded($propertyName, $reflClass, $classMetadata);
-            }
+            $this->addNestedEmbedded(
+                $reflProperty->getName(),
+                new \ReflectionClass($annotation->class),
+                $classMetadata
+            );
         }
 
         return $classMetadata;
@@ -69,6 +65,10 @@ class AnnotationDriver implements DriverInterface
         \ReflectionClass $reflClass,
         ClassMetadataInterface $classMetadata
     ) {
+        if (!$this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
+            return;
+        }
+
         foreach ($reflClass->getProperties() as $reflProperty) {
             if (!$annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
                 continue;

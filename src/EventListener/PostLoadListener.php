@@ -58,8 +58,8 @@ class PostLoadListener implements EventSubscriber
 
             $embeddableValue = $reflProperty->getValue($entity);
             $embeddableObject = $this->getEmbeddableObject($mapping, $embeddableValue);
-            $reflProperty->setValue($entity, $embeddableObject);
 
+            $reflProperty->setValue($entity, $embeddableObject);
         }
     }
 

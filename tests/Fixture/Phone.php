@@ -38,4 +38,13 @@ class Phone
     {
         $this->number = preg_replace('/\D+/', '', $number);
     }
+
+    public function setActive($active)
+    {
+        if (!is_bool($active)) {
+            throw new \UnexpectedValueException();
+        }
+
+        $this->active = $active;
+    }
 }

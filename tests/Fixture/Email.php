@@ -14,6 +14,8 @@ class Email
      */
     private $address;
 
+    private $confirmed = false;
+
     public function __construct($address = null)
     {
         $this->setAddress($address);
