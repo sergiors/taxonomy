@@ -22,7 +22,7 @@
         "sebastian/phpcpd": "~2.0",
         "squizlabs/php_codesniffer": "~2.1",
         "fzaninotto/faker": "~1.5",
-        "ext-pdo_sqlite": "^7.0"
+        "ext-pdo_sqlite": "^5.5|^7.0"
     },
     "autoload": {
         "psr-4": {
