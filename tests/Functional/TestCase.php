@@ -14,6 +14,9 @@ use Sergiors\Taxonomy\EventListener\ClassMetadataListener;
 use Sergiors\Taxonomy\EventListener\PostLoadListener;
 use Sergiors\Taxonomy\EventListener\PrePersistListener;
 use Sergiors\Taxonomy\EventListener\PreUpdateListener;
+use Sergiors\Taxonomy\Tests\Fixture\User;
+use Sergiors\Taxonomy\Tests\Fixture\Email;
+use Sergiors\Taxonomy\Tests\Fixture\Phone;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -91,5 +94,58 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $container['taxonomy.metadata_factory'] = $container->share(function ($container) {
             return new MetadataFactory($container['taxonomy.annotation_driver']);
         });
+    }
+
+    public function setUp()
+    {
+        $pdo = $this->container['doctrine_orm.entity_manager']
+            ->getConnection()
+            ->getWrappedConnection();
+
+        $pdo->exec('
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY,
+                name VARCHAR (200),
+                phone_metadata TEXT,
+                email_metadata TEXT
+            )
+        ');
+    }
+
+    public function tearDown()
+    {
+        $pdo = $this->container['doctrine_orm.entity_manager']
+            ->getConnection()
+            ->getWrappedConnection();
+
+        $pdo->exec('DROP TABLE IF EXISTS users');
+    }
+
+    /**
+     * @before
+     */
+    public function insertUsers()
+    {
+        $em = $this->container['doctrine_orm.entity_manager'];
+
+        $faker = \Faker\Factory::create();
+
+        $user = new User();
+        $user->setName('Sérgio');
+        $user->setEmail(new Email($faker->email));
+
+        $phone = new Phone();
+        $phone->setNumber('4792030815');
+
+        $user2 = new User();
+        $user2->setName($faker->name);
+        $user2->setEmail(new Email('kirk@enterprise.com'));
+        $user2->setMobile($phone);
+
+        $em->persist($user2);
+        $em->persist($user);
+
+        $em->flush();
+        $em->clear();
     }
 }

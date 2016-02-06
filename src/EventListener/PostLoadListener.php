@@ -7,8 +7,8 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadata;
 use Sergiors\Taxonomy\Type\Type;
-use ReflectionClass;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -50,52 +50,35 @@ class PostLoadListener implements EventSubscriber
     public function postLoad(LifecycleEventArgs $event)
     {
         $entity = $event->getObject();
-        $entityClass = get_class($entity);
-        $reflClass = new ReflectionClass($entityClass);
-        $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
+        $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
 
         foreach ($classMetadata->getEmbeddedList() as $propertyName => $embeddedMetadata) {
-            var_dump($embeddedMetadata);
-//            $reflProperty = $reflClass->getProperty($propertyName);
-//            $reflProperty->setAccessible(true);
-//
-//            $embeddableValue = $reflProperty->getValue($entity);
-//            $embeddableObject = $this->getEmbeddableObject($mapping, $embeddableValue);
-//
-//            $reflProperty->setValue($entity, $embeddableObject);
+            $embeddedValue = $embeddedMetadata->getValue($entity);
+            $embeddedObject = $this->getEmbeddedObject($embeddedMetadata, $embeddedValue);
+            $embeddedMetadata->setValue($entity, $embeddedObject);
         }
     }
 
     /**
-     * @param array $mapping
-     * @param array $embeddableValue
+     * @param EmbeddedMetadata $embeddedMetadata
+     * @param array            $embeddedValue
      *
      * @return object
      */
-    private function getEmbeddableObject(array $mapping, array $embeddableValue)
+    private function getEmbeddedObject(EmbeddedMetadata $embeddedMetadata, array $embeddedValue)
     {
-        if (!class_exists($mapping['class'])) {
-            throw new \RuntimeException();
-        }
+        $embedded = $this->instantiator->instantiate($embeddedMetadata->getClass());
 
-        $embeddable = $this->instantiator->instantiate($mapping['class']);
-        $reflClass = new ReflectionClass($mapping['class']);
+        foreach ($embeddedMetadata->getEmbeddableList() as $embeddableMetadata) {
+            $indexType = $embeddableMetadata->getIndex()->type;
+            $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
 
-        foreach ($mapping['embeddable'] as $embeddableMapping) {
-            $reflProperty = $reflClass->getProperty($embeddableMapping['propertyName']);
-            $reflProperty->setAccessible(true);
-
-            $indexName = $embeddableMapping['name'] ?: $embeddableMapping['propertyName'];
-            if (!isset($embeddableValue[$indexName])) {
-                continue;
+            if (isset($embeddedValue[$indexName])) {
+                $value = $embeddedValue[$indexName];
+                $embeddableMetadata->setValue($embedded, Type::getType($indexType)->convertToPHPValue($value));
             }
-
-            $type = $embeddableMapping['type'];
-            $value = $embeddableValue[$indexName];
-
-            $reflProperty->setValue($embeddable, Type::getType($type)->convertToPHPValue($value));
         }
 
-        return $embeddable;
+        return $embedded;
     }
 }

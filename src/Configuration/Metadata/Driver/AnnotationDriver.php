@@ -47,7 +47,7 @@ class AnnotationDriver implements DriverInterface
                     $annotation->column
                 );
 
-                $this->addEmbeddedMetadata($embeddedMetadata);
+                $this->addEmbeddableMetadata($embeddedMetadata);
 
                 $classMetadata->addEmbeddedMetadata($embeddedMetadata);
             }
@@ -59,7 +59,7 @@ class AnnotationDriver implements DriverInterface
     /**
      * @param EmbeddedMetadata $embeddedMetadata
      */
-    private function addEmbeddedMetadata(EmbeddedMetadata $embeddedMetadata) {
+    private function addEmbeddableMetadata(EmbeddedMetadata $embeddedMetadata) {
         $reflClass = new ReflectionClass($embeddedMetadata->getClass());
 
         if (null === $this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
