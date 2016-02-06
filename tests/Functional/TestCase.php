@@ -27,7 +27,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $container['doctrine_dbal.configuration'] = [
             'driver' => 'pdo_sqlite',
-            'memory' => true,
+            'memory' => true
         ];
 
         $container['doctrine_dbal.event_manager'] = $container->share(function () {

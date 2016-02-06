@@ -3,7 +3,7 @@
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\DBAL\Types\Type;
 use Metadata\MetadataFactory;
@@ -44,16 +44,14 @@ class ClassMetadataListener implements EventSubscriber
         $className = $event->getClassMetadata()->getName();
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
 
-        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $mapping) {
-            if (null === $mapping['column']) {
-                continue;
+        foreach ($classMetadata->getEmbeddedList() as $embeddedMetadata) {
+            if ($column = $embeddedMetadata->getColumn()) {
+                $event->getClassMetadata()->mapField([
+                    'fieldName' => $embeddedMetadata->name,
+                    'columnName' => $column->name,
+                    'type' => Type::JSON_ARRAY
+                ]);
             }
-
-            $event->getClassMetadata()->mapField([
-                'fieldName' => $propertyName,
-                'columnName' => $mapping['column']->name,
-                'type' => Type::JSON_ARRAY
-            ]);
         }
     }
 }

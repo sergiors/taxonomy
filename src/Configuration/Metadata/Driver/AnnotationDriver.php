@@ -4,8 +4,9 @@ namespace Sergiors\Taxonomy\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
-use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataInterface;
 use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadata;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddableMetadata;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadata;
 use Sergiors\Taxonomy\Configuration\Annotation\Embeddable;
 use Sergiors\Taxonomy\Configuration\Annotation\Embedded;
 use Sergiors\Taxonomy\Configuration\Annotation\Index;
@@ -37,51 +38,45 @@ class AnnotationDriver implements DriverInterface
         $classMetadata = new ClassMetadata($reflClass->getName());
 
         foreach ($reflClass->getProperties() as $reflProperty) {
-            if (!$annotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
-                continue;
+            /** @var Embedded $annotation */
+            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
+                $embeddedMetadata = new EmbeddedMetadata(
+                    $reflClass->getName(),
+                    $reflProperty->getName(),
+                    $annotation->class,
+                    $annotation->column
+                );
+
+                $this->addEmbeddedMetadata($embeddedMetadata);
+
+                $classMetadata->addEmbeddedMetadata($embeddedMetadata);
             }
-
-            $classMetadata->mapEmbedded($reflProperty->getName(), [
-                'class' => $annotation->class,
-                'column' => $annotation->column
-            ]);
-
-            $this->addNestedEmbedded(
-                $reflProperty->getName(),
-                new ReflectionClass($annotation->class),
-                $classMetadata
-            );
         }
 
         return $classMetadata;
     }
 
     /**
-     * @param string                 $propertyName
-     * @param ReflectionClass        $reflClass
-     * @param ClassMetadataInterface $classMetadata
+     * @param EmbeddedMetadata $embeddedMetadata
      */
-    private function addNestedEmbedded(
-        $propertyName,
-        ReflectionClass $reflClass,
-        ClassMetadataInterface $classMetadata
-    ) {
-        if (!$this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
+    private function addEmbeddedMetadata(EmbeddedMetadata $embeddedMetadata) {
+        $reflClass = new ReflectionClass($embeddedMetadata->getClass());
+
+        if (null === $this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
             return;
         }
 
         foreach ($reflClass->getProperties() as $reflProperty) {
-            if (!$annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
-                continue;
+            /** @var Index $annotation */
+            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
+                $embeddableMetadata = new EmbeddableMetadata(
+                    $reflClass->getName(),
+                    $reflProperty->getName(),
+                    $annotation
+                );
+
+                $embeddedMetadata->addEmbeddableMetadata($embeddableMetadata);
             }
-
-            $mapping = [
-                'propertyName' => $reflProperty->getName(),
-                'name' => $annotation->name,
-                'type' => $annotation->type
-            ];
-
-            $classMetadata->addNestedEmbedded($propertyName, $mapping);
         }
     }
 }

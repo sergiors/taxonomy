@@ -4,7 +4,7 @@ namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
 use Sergiors\Taxonomy\Type\Type;
@@ -54,14 +54,15 @@ class PostLoadListener implements EventSubscriber
         $reflClass = new ReflectionClass($entityClass);
         $classMetadata = $this->metadataFactory->getMetadataForClass($entityClass);
 
-        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $mapping) {
-            $reflProperty = $reflClass->getProperty($propertyName);
-            $reflProperty->setAccessible(true);
-
-            $embeddableValue = $reflProperty->getValue($entity);
-            $embeddableObject = $this->getEmbeddableObject($mapping, $embeddableValue);
-
-            $reflProperty->setValue($entity, $embeddableObject);
+        foreach ($classMetadata->getEmbeddedList() as $propertyName => $embeddedMetadata) {
+            var_dump($embeddedMetadata);
+//            $reflProperty = $reflClass->getProperty($propertyName);
+//            $reflProperty->setAccessible(true);
+//
+//            $embeddableValue = $reflProperty->getValue($entity);
+//            $embeddableObject = $this->getEmbeddableObject($mapping, $embeddableValue);
+//
+//            $reflProperty->setValue($entity, $embeddableObject);
         }
     }
 

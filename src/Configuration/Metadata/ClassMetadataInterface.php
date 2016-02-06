@@ -10,17 +10,10 @@ interface ClassMetadataInterface
     /**
      * @return array
      */
-    public function getEmbeddedClasses();
+    public function getEmbeddedList();
 
     /**
-     * @param string $propertyName
-     * @param array  $mapping
+     * @param EmbeddedMetadata $metadata
      */
-    public function mapEmbedded($propertyName, array $mapping);
-
-    /**
-     * @param string $propertyName
-     * @param array  $mapping
-     */
-    public function addNestedEmbedded($propertyName, array $mapping);
+    public function addEmbeddedMetadata(EmbeddedMetadata $metadata);
 }
