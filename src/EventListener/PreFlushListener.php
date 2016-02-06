@@ -3,12 +3,12 @@
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\ORM\Events;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class PrePersistListener extends WalkerListener
+class PreFlushListener extends WalkerListener
 {
     /**
      * @return array
@@ -16,14 +16,14 @@ class PrePersistListener extends WalkerListener
     public function getSubscribedEvents()
     {
         return [
-            Events::prePersist
+            Events::preFlush
         ];
     }
 
     /**
-     * @param LifecycleEventArgs $event
+     * @param PreFlushEventArgs $event
      */
-    public function prePersist(LifecycleEventArgs $event)
+    public function preFlush(PreFlushEventArgs $event)
     {
         $uow = $event->getEntityManager()->getUnitOfWork();
         $this->applyValueObject($uow->getScheduledEntityInsertions());

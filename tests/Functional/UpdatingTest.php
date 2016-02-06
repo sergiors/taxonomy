@@ -28,8 +28,8 @@ class InsertingTest extends TestCase
         $user->setEmail($newEmail);
 
         $em->persist($user);
-        $em->flush($user);
-        $em->detach($user);
+        $em->flush();
+        $em->clear();
 
         $userUpdated = $em
             ->getRepository(User::class)

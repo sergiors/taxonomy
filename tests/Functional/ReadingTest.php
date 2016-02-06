@@ -44,7 +44,7 @@ class ReadingTest extends TestCase
         $em = $this->container['doctrine_orm.entity_manager'];
         $user = $em
             ->getRepository(User::class)
-            ->findOneById(1);
+            ->findOneById(2);
 
         $this->assertInstanceOf(Email::class, $user->getEmail());
         $this->assertInstanceOf(Phone::class, $user->getMobile());
@@ -60,7 +60,7 @@ class ReadingTest extends TestCase
         $em = $this->container['doctrine_orm.entity_manager'];
         $user = $em
             ->getRepository(User::class)
-            ->findOneById(2);
+            ->findOneById(1);
 
         $this->assertInstanceOf(Phone::class, $user->getMobile());
 
