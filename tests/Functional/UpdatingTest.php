@@ -5,7 +5,7 @@ namespace Sergiors\Taxonomy\Tests\Functional;
 use Sergiors\Taxonomy\Tests\Fixture\User;
 use Sergiors\Taxonomy\Tests\Fixture\Email;
 
-class InsertingTest extends TestCase
+class UpdatingTest extends TestCase
 {
 
     /**
