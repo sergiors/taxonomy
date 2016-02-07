@@ -130,12 +130,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $faker = \Faker\Factory::create();
 
+        $phone = new Phone();
+        $phone->setNumber('4792030815');
+
         $user = new User();
         $user->setName('Sérgio');
         $user->setEmail(new Email($faker->email));
-
-        $phone = new Phone();
-        $phone->setNumber('4792030815');
 
         $user2 = new User();
         $user2->setName($faker->name);

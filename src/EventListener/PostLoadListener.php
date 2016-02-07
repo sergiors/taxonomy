@@ -74,8 +74,8 @@ class PostLoadListener implements EventSubscriber
             $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
 
             if (isset($embeddedValue[$indexName])) {
-                $value = $embeddedValue[$indexName];
-                $embeddableMetadata->setValue($embedded, Type::getType($indexType)->convertToPHPValue($value));
+                $value = Type::getType($indexType)->convertToPHPValue($embeddedValue[$indexName]);
+                $embeddableMetadata->setValue($embedded, $value);
             }
         }
 

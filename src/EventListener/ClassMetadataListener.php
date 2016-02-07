@@ -47,9 +47,9 @@ class ClassMetadataListener implements EventSubscriber
         foreach ($classMetadata->getEmbeddedList() as $embeddedMetadata) {
             if ($column = $embeddedMetadata->getColumn()) {
                 $event->getClassMetadata()->mapField([
-                    'fieldName' => $embeddedMetadata->name,
+                    'fieldName'  => $embeddedMetadata->name,
                     'columnName' => $column->name,
-                    'type' => Type::JSON_ARRAY
+                    'type'       => Type::JSON_ARRAY
                 ]);
             }
         }
