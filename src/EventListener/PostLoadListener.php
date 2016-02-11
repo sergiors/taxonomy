@@ -82,7 +82,7 @@ class PostLoadListener implements EventSubscriber
             if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
                 $object = $this->getEmbeddedObject(
                     $embeddableMetadata,
-                    $this->getOr($data, $embeddableMetadata->name, [])
+                    $this->getOr($data, $embeddableMetadata->getPropertyName(), [])
                 );
                 $embeddableMetadata->setValue($embedded, $object);
             }

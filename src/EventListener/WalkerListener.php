@@ -85,7 +85,7 @@ abstract class WalkerListener implements EventSubscriber
             }
 
             if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
-                $embeddableValue[$embeddableMetadata->name] = $this->getEmbeddableValue(
+                $embeddableValue[$embeddableMetadata->getPropertyName()] = $this->getEmbeddableValue(
                     $embeddableMetadata->getEmbeddableList(),
                     $embeddableMetadata->getValue($object)
                 );

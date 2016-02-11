@@ -40,9 +40,9 @@ class EmbeddedMetadata extends PropertyMetadata implements EmbeddedMetadataInter
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getName()
+    public function getPropertyName()
     {
         return $this->name;
     }

@@ -28,6 +28,14 @@ class IndexMetadata extends PropertyMetadata implements IndexMetadataInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPropertyName()
+    {
+        return $this->name;
+    }
+
+    /**
      * @return Index
      */
     public function getIndex()
