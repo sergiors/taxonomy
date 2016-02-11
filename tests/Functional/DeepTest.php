@@ -46,5 +46,8 @@ class DeepTest extends TestCase
         $this->assertInstanceOf(Address::class, $user->getAddress());
         $this->assertInstanceOf(City::class, $user->getAddress()->getCity());
         $this->assertInstanceOf(State::class, $user->getAddress()->getCity()->getState());
+
+        $this->assertEquals($user->getAddress()->getCity()->getName(), 'Florianopolis');
+        $this->assertEquals($user->getAddress()->getCity()->getState()->getName(), 'Santa Catarina');
     }
 }
