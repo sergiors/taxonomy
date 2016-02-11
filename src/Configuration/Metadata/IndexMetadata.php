@@ -8,7 +8,7 @@ use Sergiors\Taxonomy\Configuration\Annotation\Index;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class EmbeddableMetadata extends PropertyMetadata
+class IndexMetadata extends PropertyMetadata implements IndexMetadataInterface
 {
     /**
      * @var Index

@@ -28,6 +28,8 @@ class User
      *     class="Sergiors\Taxonomy\Tests\Fixture\Email",
      *     column=@Taxonomy\Column(name="email_metadata")
      * )
+     *
+     * @var Email
      */
     private $email;
 
@@ -36,8 +38,20 @@ class User
      *     class="Sergiors\Taxonomy\Tests\Fixture\Phone",
      *     column=@Taxonomy\Column(name="phone_metadata")
      * )
+     *
+     * @var Phone
      */
     private $mobile;
+
+    /**
+     * @Taxonomy\Embedded(
+     *     class="Sergiors\Taxonomy\Tests\Fixture\Address",
+     *     column=@Taxonomy\Column(name="address_metadata")
+     * )
+     *
+     * @var Address
+     */
+    private $address;
 
     public function getId()
     {
@@ -59,6 +73,11 @@ class User
         return $this->mobile;
     }
 
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
     public function setId($id)
     {
         $this->id = $id;
@@ -77,5 +96,10 @@ class User
     public function setMobile(Phone $mobile)
     {
         $this->mobile = $mobile;
+    }
+
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 }

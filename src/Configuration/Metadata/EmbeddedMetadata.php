@@ -5,7 +5,10 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 use Metadata\PropertyMetadata;
 use Sergiors\Taxonomy\Configuration\Annotation\Column;
 
-class EmbeddedMetadata extends PropertyMetadata
+/**
+ * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
+ */
+class EmbeddedMetadata extends PropertyMetadata implements EmbeddedMetadataInterface
 {
     /**
      * @var string
@@ -18,7 +21,7 @@ class EmbeddedMetadata extends PropertyMetadata
     private $columnAttr;
 
     /**
-     * @var EmbeddableMetadata[]
+     * @var EmbeddableMetadataInterface[]
      */
     private $embeddableMetadata = [];
 
@@ -34,6 +37,14 @@ class EmbeddedMetadata extends PropertyMetadata
 
         $this->classAttr = $classAttr;
         $this->columnAttr = $columnAttr;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -58,9 +69,9 @@ class EmbeddedMetadata extends PropertyMetadata
     }
 
     /**
-     * @param EmbeddableMetadata $metadata
+     * @param EmbeddableMetadataInterface $metadata
      */
-    public function addEmbeddableMetadata(EmbeddableMetadata $metadata)
+    public function addEmbeddableMetadata(EmbeddableMetadataInterface $metadata)
     {
         $this->embeddableMetadata[] = $metadata;
     }

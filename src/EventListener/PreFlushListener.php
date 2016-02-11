@@ -16,7 +16,7 @@ class PreFlushListener extends WalkerListener
     public function getSubscribedEvents()
     {
         return [
-            Events::preFlush
+            Events::preFlush,
         ];
     }
 

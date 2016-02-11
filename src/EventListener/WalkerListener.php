@@ -5,6 +5,8 @@ namespace Sergiors\Taxonomy\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Metadata\MetadataFactory;
 use Sergiors\Taxonomy\Type\Type;
+use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -46,10 +48,12 @@ abstract class WalkerListener implements EventSubscriber
         }
 
         foreach ($embeddedList as $propertyName => $embeddedMetadata) {
-            if ($embeddable = $embeddedMetadata->getValue($entity)) {
-                $embeddableValue = $this->getEmbeddableValue($embeddedMetadata->getEmbeddableList(), $embeddable);
-                $embeddedMetadata->setValue($entity, $embeddableValue);
+            if (!$embeddable = $embeddedMetadata->getValue($entity)) {
+                continue;
             }
+
+            $embeddableValue = $this->getEmbeddableValue($embeddedMetadata->getEmbeddableList(), $embeddable);
+            $embeddedMetadata->setValue($entity, $embeddableValue);
         }
     }
 
@@ -68,11 +72,24 @@ abstract class WalkerListener implements EventSubscriber
         $embeddableValue = [];
 
         foreach ($embeddableList as $embeddableMetadata) {
-            $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
-            $indexType = $embeddableMetadata->getIndex()->type;
-            $value = $embeddableMetadata->getValue($object);
+            if (!$embeddableMetadata->getValue($object)) {
+                continue;
+            }
 
-            $embeddableValue[$indexName] = Type::getType($indexType)->convertToDatabaseValue($value);
+            if ($embeddableMetadata instanceof IndexMetadataInterface) {
+                $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
+                $indexType = $embeddableMetadata->getIndex()->type;
+                $indexValue = $embeddableMetadata->getValue($object);
+
+                $embeddableValue[$indexName] = Type::getType($indexType)->convertToDatabaseValue($indexValue);
+            }
+
+            if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
+                $embeddableValue[$embeddableMetadata->name] = $this->getEmbeddableValue(
+                    $embeddableMetadata->getEmbeddableList(),
+                    $embeddableMetadata->getValue($object)
+                );
+            }
         }
 
         return $embeddableValue;

@@ -7,8 +7,9 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
 use Metadata\MetadataFactory;
-use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadata;
 use Sergiors\Taxonomy\Type\Type;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
+use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -60,25 +61,46 @@ class PostLoadListener implements EventSubscriber
     }
 
     /**
-     * @param EmbeddedMetadata $embeddedMetadata
-     * @param array            $embeddedValue
+     * @param EmbeddedMetadataInterface $embeddedMetadata
+     * @param array                     $data
      *
      * @return object
      */
-    private function getEmbeddedObject(EmbeddedMetadata $embeddedMetadata, array $embeddedValue)
+    private function getEmbeddedObject(EmbeddedMetadataInterface $embeddedMetadata, array $data)
     {
         $embedded = $this->instantiator->instantiate($embeddedMetadata->getClass());
 
         foreach ($embeddedMetadata->getEmbeddableList() as $embeddableMetadata) {
-            $indexType = $embeddableMetadata->getIndex()->type;
-            $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
+            if ($embeddableMetadata instanceof IndexMetadataInterface) {
+                $type = $embeddableMetadata->getIndex()->type;
+                $name = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
+                $value = Type::getType($type)->convertToPHPValue($this->getOr($data, $name));
 
-            if (isset($embeddedValue[$indexName])) {
-                $value = Type::getType($indexType)->convertToPHPValue($embeddedValue[$indexName]);
                 $embeddableMetadata->setValue($embedded, $value);
+            }
+
+            if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
+                $object = $this->getEmbeddedObject(
+                    $embeddableMetadata,
+                    $this->getOr($data, $embeddableMetadata->name, [])
+                );
+                $embeddableMetadata->setValue($embedded, $object);
             }
         }
 
         return $embedded;
+    }
+
+    private function getOr($map, $key, $default = null)
+    {
+        if (is_null($key)) {
+            return $map;
+        }
+
+        if (isset($map[$key])) {
+            return $map[$key];
+        }
+
+        return $default;
     }
 }

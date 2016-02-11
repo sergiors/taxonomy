@@ -15,7 +15,7 @@ abstract class Type
      */
     private static $typesMap = [
         self::TEXT => 'Sergiors\Taxonomy\Type\TextType',
-        self::DATETIME => 'Sergiors\Taxonomy\Type\DateTimeType'
+        self::DATETIME => 'Sergiors\Taxonomy\Type\DateTimeType',
     ];
 
     /**
@@ -39,17 +39,17 @@ abstract class Type
         }
 
         if (!isset(self::$typeObjects[$name])) {
-            self::$typeObjects[$name] = new self::$typesMap[$name];
+            self::$typeObjects[$name] = new self::$typesMap[$name]();
         }
 
         return self::$typeObjects[$name];
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
+     /**
+      * @param mixed $value
+      *
+      * @return string
+      */
      public function convertToDatabaseValue($value)
      {
          return $value;

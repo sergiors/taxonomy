@@ -16,7 +16,7 @@ class PreUpdateListener extends WalkerListener
     public function getSubscribedEvents()
     {
         return [
-            Events::preUpdate
+            Events::preUpdate,
         ];
     }
 

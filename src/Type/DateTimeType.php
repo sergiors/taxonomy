@@ -20,7 +20,7 @@ class DateTimeType extends Type
     public function convertToDatabaseValue($value)
     {
         if ('' === $value || null === $value) {
-            return null;
+            return;
         }
 
         if ($value instanceof \DateTime) {
@@ -38,7 +38,7 @@ class DateTimeType extends Type
     public function convertToPHPValue($value)
     {
         if ('' === $value || null === $value) {
-            return null;
+            return;
         }
 
         return \DateTime::createFromFormat(self::DATETIME_FORMAT, $value);
