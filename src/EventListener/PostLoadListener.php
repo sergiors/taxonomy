@@ -74,7 +74,7 @@ class PostLoadListener implements EventSubscriber
             if ($embeddableMetadata instanceof IndexMetadataInterface) {
                 $type = $embeddableMetadata->getIndex()->type;
                 $name = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
-                $value = Type::getType($type)->convertToPHPValue($this->getOr($data, $name));
+                $value = Type::getType($type)->convertToPHPValue($this->get($data, $name));
 
                 $embeddableMetadata->setValue($embedded, $value);
             }
@@ -82,7 +82,7 @@ class PostLoadListener implements EventSubscriber
             if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
                 $object = $this->getEmbeddedObject(
                     $embeddableMetadata,
-                    $this->getOr($data, $embeddableMetadata->getPropertyName(), [])
+                    $this->get($data, $embeddableMetadata->getPropertyName(), [])
                 );
                 $embeddableMetadata->setValue($embedded, $object);
             }
@@ -91,12 +91,8 @@ class PostLoadListener implements EventSubscriber
         return $embedded;
     }
 
-    private function getOr($map, $key, $default = null)
+    private function get($map, $key, $default = null)
     {
-        if (is_null($key)) {
-            return $map;
-        }
-
         if (isset($map[$key])) {
             return $map[$key];
         }
