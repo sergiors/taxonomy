@@ -91,7 +91,7 @@ class PostLoadListener implements EventSubscriber
         return $embedded;
     }
 
-    private function get($map, $key, $default = null)
+    private function get(array $map, $key, $default = null)
     {
         if (isset($map[$key])) {
             return $map[$key];
