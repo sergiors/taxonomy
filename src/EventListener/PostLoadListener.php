@@ -54,7 +54,10 @@ class PostLoadListener implements EventSubscriber
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
 
         foreach ($classMetadata->getEmbeddedList() as $propertyName => $embeddedMetadata) {
-            $embeddedValue = $embeddedMetadata->getValue($entity);
+            if (!is_array($embeddedValue = $embeddedMetadata->getValue($entity))) {
+                continue;
+            }
+
             $embeddedObject = $this->getEmbeddedObject($embeddedMetadata, $embeddedValue);
             $embeddedMetadata->setValue($entity, $embeddedObject);
         }
