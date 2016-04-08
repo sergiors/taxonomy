@@ -5,6 +5,11 @@ Taxonomy
 
 Taxonomy is an easier way implements Value Object and persist them in JSON format. Like Doctrine Embeddables
 
+Motivation
+----------
+http://www.postgresql.org/docs/9.5/static/datatype-json.html  
+https://dev.mysql.com/doc/refman/5.7/en/json.html
+
 Install
 -------
 ```bash
