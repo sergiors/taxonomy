@@ -1,7 +1,9 @@
 Taxonomy
 --------
 
-[![Build Status](https://travis-ci.org/sergiors/taxonomy.svg?branch=master)](https://travis-ci.org/sergiors/taxonomy)
+[![Build Status](https://scrutinizer-ci.com/g/sergiors/taxonomy/badges/build.png?b=master)](https://scrutinizer-ci.com/g/sergiors/taxonomy/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/sergiors/taxonomy/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sergiors/taxonomy/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sergiors/taxonomy/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sergiors/taxonomy/?branch=master)
 
 Taxonomy is an easier way implements Value Object and persist them in JSON format. Like Doctrine Embeddables
 
