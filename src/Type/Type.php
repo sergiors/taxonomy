@@ -45,15 +45,15 @@ abstract class Type
         return self::$typeObjects[$name];
     }
 
-     /**
-      * @param mixed $value
-      *
-      * @return string
-      */
-     public function convertToDatabaseValue($value)
-     {
-         return $value;
-     }
+    /**
+     * @param mixed $value
+     *
+     * @return string
+     */
+    public function convertToDatabaseValue($value)
+    {
+        return $value;
+    }
 
     /**
      * @param string $value
