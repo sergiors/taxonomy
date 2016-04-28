@@ -14,7 +14,7 @@ final class Embedded implements Annotation
     public $class;
 
     /**
-     * @var \Sergiors\Taxonomy\Configuration\Annotation\Column
+     * @var \Doctrine\ORM\Mapping\Column
      */
     public $column;
 }

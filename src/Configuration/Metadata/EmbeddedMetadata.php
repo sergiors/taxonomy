@@ -3,7 +3,7 @@
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
 use Metadata\PropertyMetadata;
-use Sergiors\Taxonomy\Configuration\Annotation\Column;
+use Doctrine\ORM\Mapping\Column;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
