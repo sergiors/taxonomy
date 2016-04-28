@@ -109,9 +109,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
                 name VARCHAR (200),
-                phone_metadata TEXT,
-                email_metadata TEXT,
-                address_metadata TEXT
+                metadata TEXT
             )
         ');
     }
