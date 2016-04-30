@@ -49,7 +49,13 @@ class ClassMetadataListener implements EventSubscriber
             if (null === $embeddedMetadata->getColumnAttribute()
                 || false === $embeddedMetadata->getColumnAttribute() instanceof Column
             ) {
-                throw new \RuntimeException(sprintf('You must set '));
+                throw new \RuntimeException(
+                    sprintf(
+                        'You must set property column in "%s::%s()"',
+                        $embeddedMetadata->getClassName(),
+                        $embeddedMetadata->getPropertyName()
+                    )
+                );
             }
 
             $event->getClassMetadata()->mapField([
