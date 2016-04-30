@@ -7,8 +7,4 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
  */
 interface EmbeddableMetadataInterface
 {
-    /**
-     * @return string
-     */
-    public function getPropertyName();
 }

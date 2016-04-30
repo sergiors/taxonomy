@@ -5,13 +5,25 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-interface EmbeddedMetadataInterface extends EmbeddableMetadataInterface
+interface EmbeddedMetadataInterface extends EmbeddableMetadataInterface, MetadataInterface
 {
-    public function getClass();
+    /**
+     * @return string
+     */
+    public function getClassAttribute();
 
-    public function getColumn();
+    /**
+     * @return \Doctrine\ORM\Mapping\Column
+     */
+    public function getColumnAttribute();
 
-    public function getEmbeddableList();
+    /**
+     * @return array
+     */
+    public function getEmbeddableClasses();
 
-    public function addEmbeddableMetadata(EmbeddableMetadataInterface $metadata);
+    /**
+     * @param EmbeddableMetadataInterface $embeddableMetadata
+     */
+    public function addEmbeddableClass(EmbeddableMetadataInterface $embeddableMetadata);
 }

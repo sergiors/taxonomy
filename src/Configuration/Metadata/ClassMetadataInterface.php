@@ -10,10 +10,10 @@ interface ClassMetadataInterface
     /**
      * @return array
      */
-    public function getEmbeddedList();
+    public function getEmbeddedClasses();
 
     /**
-     * @param EmbeddedMetadata $metadata
+     * @param EmbeddedMetadataInterface $embeddedMetadata
      */
-    public function addEmbeddedMetadata(EmbeddedMetadata $metadata);
+    public function addEmbeddedClass(EmbeddedMetadataInterface $embeddedMetadata);
 }

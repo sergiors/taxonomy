@@ -3,19 +3,17 @@
 namespace Sergiors\Taxonomy\Configuration\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
-use Metadata\Driver\DriverInterface;
+use Sergiors\Taxonomy\Configuration\Annotation\Embedded;
+use Sergiors\Taxonomy\Configuration\Annotation\Index;
 use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadata;
 use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadata;
 use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadata;
-use Sergiors\Taxonomy\Configuration\Annotation\Embeddable;
-use Sergiors\Taxonomy\Configuration\Annotation\Embedded;
-use Sergiors\Taxonomy\Configuration\Annotation\Index;
-use ReflectionClass;
+use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class AnnotationDriver implements DriverInterface
+class AnnotationDriver implements MappingDriverInterface
 {
     /**
      * @var Reader
@@ -31,63 +29,67 @@ class AnnotationDriver implements DriverInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $className
+     *
+     * @return ClassMetadata
      */
-    public function loadMetadataForClass(ReflectionClass $reflClass)
+    public function loadMetadataForClass($className)
     {
-        $classMetadata = new ClassMetadata($reflClass->getName());
+        $classMetadata = new ClassMetadata($className);
+        $reflClass = new \ReflectionClass($className);
 
         foreach ($reflClass->getProperties() as $reflProperty) {
-            /** @var Embedded $embeddedAnnotation */
-            if (!$embeddedAnnotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
-                continue;
+            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
+                $embeddedMetadata = $this->addNestedEmbeddedClasses(
+                    new EmbeddedMetadata(
+                        $reflProperty->class,
+                        $reflProperty->name,
+                        $annotation->class,
+                        $annotation->column
+                    )
+                );
+
+                $classMetadata->addEmbeddedClass($embeddedMetadata);
             }
-
-            $this->addEmbeddableMetadata($embeddedMetadata = new EmbeddedMetadata(
-                $reflClass->getName(),
-                $reflProperty->getName(),
-                $embeddedAnnotation->class,
-                $embeddedAnnotation->column
-            ));
-
-            $classMetadata->addEmbeddedMetadata($embeddedMetadata);
         }
 
         return $classMetadata;
     }
 
     /**
-     * @param EmbeddedMetadata $embeddedMetadata
+     * @param EmbeddedMetadataInterface $embeddedMetadata
+     *
+     * @return EmbeddedMetadataInterface
      */
-    private function addEmbeddableMetadata(EmbeddedMetadata $embeddedMetadata)
+    private function addNestedEmbeddedClasses(EmbeddedMetadataInterface $embeddedMetadata)
     {
-        $reflClass = new ReflectionClass($embeddedMetadata->getClass());
-
-        if (!$this->reader->getClassAnnotation($reflClass, Embeddable::class)) {
-            return;
-        }
+        $reflClass = new \ReflectionClass($embeddedMetadata->getClassAttribute());
 
         foreach ($reflClass->getProperties() as $reflProperty) {
-            /** @var Index $indexAnnotation */
-            if ($indexAnnotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
-                $embeddedMetadata->addEmbeddableMetadata(new IndexMetadata(
-                    $reflClass->getName(),
-                    $reflProperty->getName(),
-                    $indexAnnotation
-                ));
+            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Index::class)) {
+                $embeddedMetadata->addEmbeddableClass(
+                    new IndexMetadata(
+                        $reflProperty->class,
+                        $reflProperty->name,
+                        $annotation->name,
+                        $annotation->type
+                    )
+                );
             }
 
-            /** @var Embedded $embeddedAnnotation */
-            if ($embeddedAnnotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
-                $this->addEmbeddableMetadata($nested = new EmbeddedMetadata(
-                    $reflClass->getName(),
-                    $reflProperty->getName(),
-                    $embeddedAnnotation->class,
-                    $embeddedAnnotation->column
-                ));
+            if ($annotation = $this->reader->getPropertyAnnotation($reflProperty, Embedded::class)) {
+                $nested = $this->addNestedEmbeddedClasses(
+                    new EmbeddedMetadata(
+                        $reflProperty->class,
+                        $reflProperty->name,
+                        $annotation->class
+                    )
+                );
 
-                $embeddedMetadata->addEmbeddableMetadata($nested);
+                $embeddedMetadata->addEmbeddableClass($nested);
             }
         }
+
+        return $embeddedMetadata;
     }
 }

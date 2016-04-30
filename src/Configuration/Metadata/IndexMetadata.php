@@ -8,38 +8,92 @@ use Sergiors\Taxonomy\Configuration\Annotation\Index;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class IndexMetadata extends PropertyMetadata implements IndexMetadataInterface
+class IndexMetadata implements IndexMetadataInterface
 {
     /**
-     * @var Index
+     * @var string
      */
-    private $index;
+    private $className;
 
     /**
-     * @param string $class
-     * @param string $name
-     * @param Index  $index
+     * @var string
      */
-    public function __construct($class, $name, Index $index)
-    {
-        parent::__construct($class, $name);
+    private $propertyName;
 
-        $this->index = $index;
+    /**
+     * @var string
+     */
+    private $nameAttribute;
+
+    /**
+     * @var string
+     */
+    private $typeAttribute;
+
+    private $reflProperty;
+
+    /**
+     * @param string      $className
+     * @param string      $propertyName
+     * @param string|null $nameAttribute
+     * @param string|null $typeAttribute
+     */
+    public function __construct($className, $propertyName, $nameAttribute = null, $typeAttribute = null)
+    {
+        $this->className = $className;
+        $this->propertyName = $propertyName;
+        $this->nameAttribute = $nameAttribute;
+        $this->typeAttribute = $typeAttribute;
+
+        $this->reflProperty = new \ReflectionProperty($className, $propertyName);
+        $this->reflProperty->setAccessible(true);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
+     */
+    public function getClassName()
+    {
+        return $this->className;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getPropertyName()
     {
-        return $this->name;
+        return $this->propertyName;
     }
 
     /**
-     * @return Index
+     * {@inheritdoc}
      */
-    public function getIndex()
+    public function getNameAttribute()
     {
-        return $this->index;
+        return $this->nameAttribute ?: $this->propertyName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTypeAttribute()
+    {
+        return $this->typeAttribute;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue($entity)
+    {
+        return $this->reflProperty->getValue($entity);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($entity, $value)
+    {
+        $this->reflProperty->setValue($entity, $value);
     }
 }

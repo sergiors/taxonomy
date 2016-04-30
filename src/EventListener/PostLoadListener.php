@@ -6,8 +6,8 @@ use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Instantiator\Instantiator;
-use Metadata\MetadataFactory;
 use Sergiors\Taxonomy\Type\Type;
+use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
 use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
 
@@ -17,7 +17,7 @@ use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
 class PostLoadListener implements EventSubscriber
 {
     /**
-     * @var MetadataFactory
+     * @var ClassMetadataFactory
      */
     private $metadataFactory;
 
@@ -27,9 +27,9 @@ class PostLoadListener implements EventSubscriber
     private $instantiator;
 
     /**
-     * @param MetadataFactory $metadataFactory
+     * @param ClassMetadataFactory $metadataFactory
      */
-    public function __construct(MetadataFactory $metadataFactory)
+    public function __construct(ClassMetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
         $this->instantiator = new Instantiator();
@@ -53,7 +53,7 @@ class PostLoadListener implements EventSubscriber
         $entity = $event->getObject();
         $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
 
-        foreach ($classMetadata->getEmbeddedList() as $propertyName => $embeddedMetadata) {
+        foreach ($classMetadata->getEmbeddedClasses() as $propertyName => $embeddedMetadata) {
             if (!is_array($embeddedValue = $embeddedMetadata->getValue($entity))) {
                 continue;
             }
@@ -71,12 +71,12 @@ class PostLoadListener implements EventSubscriber
      */
     private function getEmbeddedObject(EmbeddedMetadataInterface $embeddedMetadata, array $data)
     {
-        $embedded = $this->instantiator->instantiate($embeddedMetadata->getClass());
+        $embedded = $this->instantiator->instantiate($embeddedMetadata->getClassAttribute());
 
-        foreach ($embeddedMetadata->getEmbeddableList() as $embeddableMetadata) {
+        foreach ($embeddedMetadata->getEmbeddableClasses() as $embeddableMetadata) {
             if ($embeddableMetadata instanceof IndexMetadataInterface) {
-                $type = $embeddableMetadata->getIndex()->type;
-                $name = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
+                $name = $embeddableMetadata->getNameAttribute();
+                $type = $embeddableMetadata->getTypeAttribute();
                 $value = Type::getType($type)->convertToPHPValue($this->get($data, $name));
 
                 $embeddableMetadata->setValue($embedded, $value);

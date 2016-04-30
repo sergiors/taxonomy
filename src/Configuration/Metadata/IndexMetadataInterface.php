@@ -5,7 +5,15 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-interface IndexMetadataInterface extends EmbeddableMetadataInterface
+interface IndexMetadataInterface extends EmbeddableMetadataInterface, MetadataInterface
 {
-    public function getIndex();
+    /**
+     * @return string
+     */
+    public function getNameAttribute();
+
+    /**
+     * @return string
+     */
+    public function getTypeAttribute();
 }

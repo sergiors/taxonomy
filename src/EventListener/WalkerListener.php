@@ -3,10 +3,10 @@
 namespace Sergiors\Taxonomy\EventListener;
 
 use Doctrine\Common\EventSubscriber;
-use Metadata\MetadataFactory;
-use Sergiors\Taxonomy\Type\Type;
-use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
+use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
+use Sergiors\Taxonomy\Configuration\Metadata\IndexMetadataInterface;
+use Sergiors\Taxonomy\Type\Type;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -14,14 +14,14 @@ use Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface;
 abstract class WalkerListener implements EventSubscriber
 {
     /**
-     * @var MetadataFactory
+     * @var ClassMetadataFactory
      */
     private $metadataFactory;
 
     /**
-     * @param MetadataFactory $metadataFactory
+     * @param ClassMetadataFactory $metadataFactory
      */
-    public function __construct(MetadataFactory $metadataFactory)
+    public function __construct(ClassMetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
     }
@@ -32,27 +32,28 @@ abstract class WalkerListener implements EventSubscriber
     protected function applyValueObject(array $scheduledEntity)
     {
         foreach ($scheduledEntity as $entity) {
-            $classMetadata = $this->metadataFactory->getMetadataForClass(get_class($entity));
-            $this->applyEmbeddedValueToEntity($classMetadata->getEmbeddedList(), $entity);
+            $className = get_class($entity);
+            $classMetadata = $this->metadataFactory->getMetadataForClass($className);
+            $this->applyEmbeddedValueToEntity($classMetadata->getEmbeddedClasses(), $entity);
         }
     }
 
     /**
-     * @param array  $embeddedList
+     * @param array  $embeddedClasses
      * @param object $entity
      */
-    private function applyEmbeddedValueToEntity(array $embeddedList, $entity)
+    private function applyEmbeddedValueToEntity(array $embeddedClasses, $entity)
     {
         if (!is_object($entity)) {
             throw new \UnexpectedValueException();
         }
 
-        foreach ($embeddedList as $propertyName => $embeddedMetadata) {
+        foreach ($embeddedClasses as $embeddedMetadata) {
             if (!$embeddable = $embeddedMetadata->getValue($entity)) {
                 continue;
             }
 
-            $embeddableValue = $this->getEmbeddableValue($embeddedMetadata->getEmbeddableList(), $embeddable);
+            $embeddableValue = $this->getEmbeddableValue($embeddedMetadata->getEmbeddableClasses(), $embeddable);
             $embeddedMetadata->setValue($entity, $embeddableValue);
         }
     }
@@ -77,8 +78,8 @@ abstract class WalkerListener implements EventSubscriber
             }
 
             if ($embeddableMetadata instanceof IndexMetadataInterface) {
-                $indexName = $embeddableMetadata->getIndex()->name ?: $embeddableMetadata->name;
-                $indexType = $embeddableMetadata->getIndex()->type;
+                $indexName = $embeddableMetadata->getNameAttribute();
+                $indexType = $embeddableMetadata->getTypeAttribute();
                 $indexValue = $embeddableMetadata->getValue($object);
 
                 $embeddableValue[$indexName] = Type::getType($indexType)->convertToDatabaseValue($indexValue);
@@ -86,7 +87,7 @@ abstract class WalkerListener implements EventSubscriber
 
             if ($embeddableMetadata instanceof EmbeddedMetadataInterface) {
                 $embeddableValue[$embeddableMetadata->getPropertyName()] = $this->getEmbeddableValue(
-                    $embeddableMetadata->getEmbeddableList(),
+                    $embeddableMetadata->getEmbeddableClasses(),
                     $embeddableMetadata->getValue($object)
                 );
             }

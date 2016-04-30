@@ -2,77 +2,120 @@
 
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
-use Metadata\PropertyMetadata;
-use Doctrine\ORM\Mapping\Column;
-
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class EmbeddedMetadata extends PropertyMetadata implements EmbeddedMetadataInterface
+class EmbeddedMetadata implements EmbeddedMetadataInterface
 {
     /**
      * @var string
      */
-    private $classAttr;
+    private $className;
 
     /**
-     * @var Column
+     * @var string
      */
-    private $columnAttr;
+    private $propertyName;
 
     /**
-     * @var EmbeddableMetadataInterface[]
+     * @var string
      */
-    private $embeddableMetadata = [];
+    private $classAttribute;
 
     /**
-     * @param string      $class
-     * @param string      $name
-     * @param string      $classAttr
-     * @param Column|null $columnAttr
+     * @var string
      */
-    public function __construct($class, $name, $classAttr, Column $columnAttr = null)
-    {
-        parent::__construct($class, $name);
+    private $columnAttribute;
 
-        $this->classAttr = $classAttr;
-        $this->columnAttr = $columnAttr;
+    /**
+     * @var array
+     */
+    private $embeddableClasses = [];
+
+    private $reflProperty;
+
+    /**
+     * @param string $className
+     * @param string $propertyName
+     * @param string $classAttribute
+     * @param null   $columnAttribute
+     */
+    public function __construct(
+        $className,
+        $propertyName,
+        $classAttribute,
+        $columnAttribute = null
+    ) {
+        $this->className = $className;
+        $this->propertyName = $propertyName;
+        $this->classAttribute = $classAttribute;
+        $this->columnAttribute = $columnAttribute;
+
+        $this->reflProperty = new \ReflectionProperty($className, $propertyName);
+        $this->reflProperty->setAccessible(true);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
+     */
+    public function getClassName()
+    {
+        return $this->className;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getPropertyName()
     {
-        return $this->name;
+        return $this->propertyName;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getClass()
+    public function getClassAttribute()
     {
-        return $this->classAttr;
+        return $this->classAttribute;
     }
 
     /**
-     * @return Column
+     * {@inheritdoc}
      */
-    public function getColumn()
+    public function getColumnAttribute()
     {
-        return $this->columnAttr;
-    }
-
-    public function getEmbeddableList()
-    {
-        return $this->embeddableMetadata;
+        return $this->columnAttribute;
     }
 
     /**
-     * @param EmbeddableMetadataInterface $metadata
+     * {@inheritdoc}
      */
-    public function addEmbeddableMetadata(EmbeddableMetadataInterface $metadata)
+    public function getEmbeddableClasses()
     {
-        $this->embeddableMetadata[] = $metadata;
+        return $this->embeddableClasses;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addEmbeddableClass(EmbeddableMetadataInterface $embeddableMetadata)
+    {
+        $this->embeddableClasses[] = $embeddableMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue($entity)
+    {
+        return $this->reflProperty->getValue($entity);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($entity, $value)
+    {
+        $this->reflProperty->setValue($entity, $value);
     }
 }

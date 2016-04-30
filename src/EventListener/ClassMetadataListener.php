@@ -5,8 +5,8 @@ namespace Sergiors\Taxonomy\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\DBAL\Types\Type;
-use Metadata\MetadataFactory;
+use Doctrine\ORM\Mapping\Column;
+use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
 
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
@@ -14,14 +14,14 @@ use Metadata\MetadataFactory;
 class ClassMetadataListener implements EventSubscriber
 {
     /**
-     * @var MetadataFactory
+     * @var ClassMetadataFactory
      */
     private $metadataFactory;
 
     /**
-     * @param MetadataFactory $metadataFactory
+     * @param ClassMetadataFactory $metadataFactory
      */
-    public function __construct(MetadataFactory $metadataFactory)
+    public function __construct(ClassMetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
     }
@@ -44,15 +44,18 @@ class ClassMetadataListener implements EventSubscriber
         $className = $event->getClassMetadata()->getName();
         $classMetadata = $this->metadataFactory->getMetadataForClass($className);
 
-        foreach ($classMetadata->getEmbeddedList() as $embeddedMetadata) {
-            if (!$columnAnnotation = $embeddedMetadata->getColumn()) {
-                continue;
+        /** @var \Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface $embeddedMetadata */
+        foreach ($classMetadata->getEmbeddedClasses() as $embeddedMetadata) {
+            if (null === $embeddedMetadata->getColumnAttribute()
+                || false === $embeddedMetadata->getColumnAttribute() instanceof Column
+            ) {
+                throw new \RuntimeException(sprintf('You must set '));
             }
 
             $event->getClassMetadata()->mapField([
-                'fieldName' => $embeddedMetadata->name,
-                'columnName' => $columnAnnotation->name,
-                'type' => Type::JSON_ARRAY,
+                'fieldName'  => $embeddedMetadata->getPropertyName(),
+                'columnName' => $embeddedMetadata->getColumnAttribute()->name,
+                'type'       => $embeddedMetadata->getColumnAttribute()->type,
             ]);
         }
     }

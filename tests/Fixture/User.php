@@ -26,7 +26,7 @@ class User
     /**
      * @Taxonomy\Embedded(
      *     class="Sergiors\Taxonomy\Tests\Fixture\UserMetadata",
-     *     column=@ORM\Column(name="metadata")
+     *     column=@ORM\Column(name="metadata", type="json_array")
      * )
      *
      * @var UserMetadata

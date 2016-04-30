@@ -2,26 +2,42 @@
 
 namespace Sergiors\Taxonomy\Configuration\Metadata;
 
-use Metadata\MergeableClassMetadata;
-
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class ClassMetadata extends MergeableClassMetadata implements ClassMetadataInterface
+class ClassMetadata implements ClassMetadataInterface
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getEmbeddedList()
+    private $className;
+
+    /**
+     * @var array
+     */
+    private $embeddedClasses = [];
+
+    /**
+     * @param string $className
+     */
+    public function __construct($className)
     {
-        return $this->propertyMetadata;
+        $this->className = $className;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addEmbeddedMetadata(EmbeddedMetadata $metadata)
+    public function getEmbeddedClasses()
     {
-        parent::addPropertyMetadata($metadata);
+        return $this->embeddedClasses;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addEmbeddedClass(EmbeddedMetadataInterface $embeddedMetadata)
+    {
+        $this->embeddedClasses[] = $embeddedMetadata;
     }
 }

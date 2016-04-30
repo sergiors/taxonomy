@@ -8,18 +8,12 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Metadata\MetadataFactory;
+use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\Driver\AnnotationDriver;
 use Sergiors\Taxonomy\EventListener\ClassMetadataListener;
 use Sergiors\Taxonomy\EventListener\PostLoadListener;
 use Sergiors\Taxonomy\EventListener\PreFlushListener;
 use Sergiors\Taxonomy\EventListener\PreUpdateListener;
-use Sergiors\Taxonomy\Tests\Fixture\User;
-use Sergiors\Taxonomy\Tests\Fixture\Email;
-use Sergiors\Taxonomy\Tests\Fixture\Phone;
-use Sergiors\Taxonomy\Tests\Fixture\State;
-use Sergiors\Taxonomy\Tests\Fixture\City;
-use Sergiors\Taxonomy\Tests\Fixture\Address;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -70,11 +64,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             ->extend('doctrine_dbal.event_manager', function ($eventManager, $container) {
                 $listeners = $container['taxonomy.listeners'];
 
-                foreach ($listeners as $listener) {
+                return array_reduce($listeners, function (EventManager $eventManager, $listener) {
                     $eventManager->addEventSubscriber($listener);
-                }
-
-                return $eventManager;
+                    return $eventManager;
+                }, $eventManager);
             });
 
         $container['taxonomy.listeners'] = $container->share(function ($container) {
@@ -95,7 +88,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         });
 
         $container['taxonomy.metadata_factory'] = $container->share(function ($container) {
-            return new MetadataFactory($container['taxonomy.annotation_driver']);
+            return new ClassMetadataFactory($container['taxonomy.annotation_driver']);
         });
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sergiors\Taxonomy\Tests\Unit;
+namespace Sergiors\Taxonomy\Tests;
 
 use Sergiors\Taxonomy\Type\Type;
 
