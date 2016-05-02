@@ -46,23 +46,13 @@ class ClassMetadataListener implements EventSubscriber
 
         /** @var \Sergiors\Taxonomy\Configuration\Metadata\EmbeddedMetadataInterface $embeddedMetadata */
         foreach ($classMetadata->getEmbeddedClasses() as $embeddedMetadata) {
-            if (null === $embeddedMetadata->getColumnAttribute()
-                || false === $embeddedMetadata->getColumnAttribute() instanceof Column
-            ) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'You must set property column in "%s::%s()"',
-                        $embeddedMetadata->getClassName(),
-                        $embeddedMetadata->getPropertyName()
-                    )
-                );
+            if ($embeddedMetadata->getColumnAttribute()) {
+                $event->getClassMetadata()->mapField([
+                    'fieldName'  => $embeddedMetadata->getPropertyName(),
+                    'columnName' => $embeddedMetadata->getColumnAttribute()->name,
+                    'type'       => $embeddedMetadata->getColumnAttribute()->type,
+                ]);
             }
-
-            $event->getClassMetadata()->mapField([
-                'fieldName'  => $embeddedMetadata->getPropertyName(),
-                'columnName' => $embeddedMetadata->getColumnAttribute()->name,
-                'type'       => $embeddedMetadata->getColumnAttribute()->type,
-            ]);
         }
     }
 }

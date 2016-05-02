@@ -6,7 +6,6 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
