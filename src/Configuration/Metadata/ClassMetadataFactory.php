@@ -34,6 +34,17 @@ class ClassMetadataFactory
      */
     public function getMetadataForClass($className)
     {
-        return $this->mappingDriver->loadMetadataForClass($className);
+        if (null === $this->cacheDriver) {
+            return $this->mappingDriver->loadMetadataForClass($className);
+        }
+
+        if ($this->cacheDriver->contains($className)) {
+            return $this->cacheDriver->fetch($className);
+        }
+
+        $metadata = $this->mappingDriver->loadMetadataForClass($className);
+        $this->cacheDriver->save($className, $metadata);
+
+        return $metadata;
     }
 }

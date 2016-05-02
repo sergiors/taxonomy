@@ -8,7 +8,7 @@ use Sergiors\Taxonomy\Configuration\Annotation\Index;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class IndexMetadata implements IndexMetadataInterface
+class IndexMetadata implements IndexMetadataInterface, \Serializable
 {
     /**
      * @var string
@@ -95,5 +95,34 @@ class IndexMetadata implements IndexMetadataInterface
     public function setValue($entity, $value)
     {
         $this->reflProperty->setValue($entity, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->className,
+            $this->propertyName,
+            $this->nameAttribute,
+            $this->typeAttribute
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->className,
+            $this->propertyName,
+            $this->nameAttribute,
+            $this->typeAttribute
+        ) = unserialize($serialized);
+
+        $this->reflProperty = new \ReflectionProperty($this->className, $this->propertyName);
+        $this->reflProperty->setAccessible(true);
     }
 }

@@ -5,7 +5,7 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class ClassMetadata implements ClassMetadataInterface
+class ClassMetadata implements ClassMetadataInterface, \Serializable
 {
     /**
      * @var string
@@ -39,5 +39,24 @@ class ClassMetadata implements ClassMetadataInterface
     public function addEmbeddedClass(EmbeddedMetadataInterface $embeddedMetadata)
     {
         $this->embeddedClasses[] = $embeddedMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->className,
+            $this->embeddedClasses
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list($this->className, $this->embeddedClasses) = unserialize($serialized);
     }
 }

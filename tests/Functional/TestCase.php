@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Sergiors\Taxonomy\Configuration\Metadata\ClassMetadataFactory;
 use Sergiors\Taxonomy\Configuration\Metadata\Driver\AnnotationDriver;
@@ -50,12 +51,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             );
         });
 
-        $container['doctrine_orm.configuration'] = $container->share(function () {
+        $container['doctrine_orm.cache_driver'] = $container->share(function () {
+            return new FilesystemCache(sys_get_temp_dir()."/doctrine");
+        });
+
+        $container['doctrine_orm.configuration'] = $container->share(function ($container) {
             return Setup::createAnnotationMetadataConfiguration(
                 [__DIR__.'/../Fixture'],
                 true,
                 sys_get_temp_dir(),
-                new ArrayCache(),
+                $container['doctrine_orm.cache_driver'],
                 false
             );
         });
@@ -88,7 +93,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         });
 
         $container['taxonomy.metadata_factory'] = $container->share(function ($container) {
-            return new ClassMetadataFactory($container['taxonomy.annotation_driver']);
+            return new ClassMetadataFactory(
+                $container['taxonomy.annotation_driver'],
+                $container['doctrine_orm.cache_driver']
+            );
         });
     }
 

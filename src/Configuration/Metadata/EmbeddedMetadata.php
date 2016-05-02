@@ -5,7 +5,7 @@ namespace Sergiors\Taxonomy\Configuration\Metadata;
 /**
  * @author Sérgio Rafael Siqueira <sergio@inbep.com.br>
  */
-class EmbeddedMetadata implements EmbeddedMetadataInterface
+class EmbeddedMetadata implements EmbeddedMetadataInterface, \Serializable
 {
     /**
      * @var string
@@ -32,6 +32,9 @@ class EmbeddedMetadata implements EmbeddedMetadataInterface
      */
     private $embeddableClasses = [];
 
+    /**
+     * @var \ReflectionProperty
+     */
     private $reflProperty;
 
     /**
@@ -117,5 +120,36 @@ class EmbeddedMetadata implements EmbeddedMetadataInterface
     public function setValue($entity, $value)
     {
         $this->reflProperty->setValue($entity, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->className,
+            $this->propertyName,
+            $this->classAttribute,
+            $this->columnAttribute,
+            $this->embeddableClasses
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list(
+            $this->className,
+            $this->propertyName,
+            $this->classAttribute,
+            $this->columnAttribute,
+            $this->embeddableClasses
+        ) = unserialize($serialized);
+
+        $this->reflProperty = new \ReflectionProperty($this->className, $this->propertyName);
+        $this->reflProperty->setAccessible(true);
     }
 }
